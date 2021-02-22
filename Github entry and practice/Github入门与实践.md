@@ -212,6 +212,38 @@ $ git checkout -b feature-D
 $ git push -u origin feature-D
 ```
 
+## 3.5 从远程仓库中获取
+
+- git clone ------ 获取远程仓库
+
+```
+$ git clone git@github.com:github-book/git-tutorial.git
+
+$ git branch -a // -a 同时显示本地和远程仓库的分支信息
+```
+
+- 获取远程分支到本地
+
+```
+$ git checkout  -b feature-D origin/feature-D
+```
+
+- 向本地分支提交更改
+
+```
+$ git diff
+$ git commit -am "Add message" 
+$ git push
+```
+
+- git pull ------- 获取最新的远程仓库分支
+
+```
+git pull origin feature-D
+```
+
+
+
 # 4. 尝试 Pull Resquest
 
 在网络上也简称PR。
