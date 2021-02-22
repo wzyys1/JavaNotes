@@ -192,13 +192,25 @@ $ git diff
 $ git diff HEAD  // 查看工作树和最新提交的差别
 ```
 
-## 4.4 推送到远程仓库
+## 3.4 推送到远程仓库
 
 在 Github 上创建 一个新的仓库
 
-- 
+- git remote add ------ 添加远程仓库
 
+```
+$ git remote add origin git@github.com:github-book/git-tutorial.git
+```
 
+- git push ------ 推送至远程仓库
+
+```
+// 推送至 master 分支
+$ git push -u origin master
+// 推送至 master 以外分支
+$ git checkout -b feature-D
+$ git push -u origin feature-D
+```
 
 # 4. 尝试 Pull Resquest
 
@@ -208,7 +220,7 @@ $ git diff HEAD  // 查看工作树和最新提交的差别
 
 登录准备的网址 : https://ituring.github.io/first-pr/
 
-![1](C:\Users\Administrator\Desktop\读书笔记\Github entry and practice\图片\1.png)
+![1](C:\Users\Administrator\Desktop\JavaNotes\Github entry and practice\图片\1.png)
 
 - Fork
 	先 Fork 创建到自己的仓库
@@ -291,7 +303,7 @@ $ git branch -a
 
 
 
-![2](C:\Users\Administrator\Desktop\读书笔记\Github entry and practice\图片\2.png)
+![2](C:\Users\Administrator\Desktop\JavaNotes\Github entry and practice\图片\2.png)
 
 ​		我们需要将原仓库设置为远程仓库，从该仓库获取（fetch）数据与本地仓库进行合并（merge），让本地的仓库的源代码保持最新状态。
 
@@ -339,7 +351,7 @@ Already up to date.
 
   可以在 `File Changed` 的某行进行评论， 发送方和接收方都会收到 Notifications
 
-- 在本地开发环境中反映 Pull Request 的内容![3](C:\Users\Administrator\Desktop\读书笔记\Github entry and practice\图片\3.png)
+- 在本地开发环境中反映 Pull Request 的内容![3](C:\Users\Administrator\Desktop\JavaNotes\Github entry and practice\图片\3.png)
 
   1. 将接收方的本地仓库更新到最新状态
 
@@ -358,7 +370,7 @@ $ git fetch PR发送者
 
 ​			3. 创建用于检查的分支
 
-![4](C:\Users\Administrator\Desktop\读书笔记\Github入门与精通\图片\4.png)
+![4](C:\Users\Administrator\Desktop\JavaNotes\Github entry and practice\图片\4.png)
 
 ```
 $ git checkout -b pr1
@@ -381,13 +393,13 @@ $ git branch -D pr1
 
   打开浏览器找出相应的 Pull Request 界面，点击 `Mege pull request`
 
-  ![5](C:\Users\Administrator\Desktop\读书笔记\Github entry and practice\图片\5.png)
+  ![5](C:\Users\Administrator\Desktop\JavaNotes\Github entry and practice\图片\5.png)
 
 - 方法二 --- 命令行操作
 
   只要通过命令行 进行合并操作，再 `push` 至 GIthub, `Pull Request` 中就会 反映出 `Pull Request` 被采纳后的状态
 
-![6](C:\Users\Administrator\Desktop\读书笔记\Github entry and practice\图片\6.png)
+![6](C:\Users\Administrator\Desktop\JavaNotes\Github entry and practice\图片\6.png)
 
 - 合并到主干分支
 
