@@ -41,13 +41,33 @@
   - 代码单元：在基本读语言平面中，每个字符用 16 位表示
 - 联机 API 文档地址 : http://docs.oracle.com/javase/9/docs/api
 
-- 如果是用较短的字符串构建字符串用 StringBuilder构建，如果是更偏于共享就直接用string类
+- 如果是用较短的字符串构建字符串用 `StringBuilder`  构建，如果是更偏于共享就直接用`string`类
 
-  - StringBuilder
+  - **StringBuilder**
     - append()
     - toString()
 
-  - StringBulider 的前身StringBuffer 效率低，但可采用多线程执行，如果在单线程执行用 StringBuilder
+  - `StringBulider` 的前身 `StringBuffer` 效率低，但可采用多线程执行，如果在单线程执行用 StringBuilder
 
 ## 3.7 输入与输出
 
+- java 6 读取控制台密码，用 console 类，为了安全，返回的密码存放在一个字符数组中。
+
+- java 5 格式化输出 System.out.println()
+
+```
+Double x = 10000.0 / 3.0;
+System.out.println("%8.2", x);
+// 输出结果 3333.33
+// 包含 8 个字符，精度为小数点后 2 个字符 这里打印一个 “前导空格” 和 7 个字符
+```
+
+- 可以使用 String.format方法 创建一个格式化的字符串，而不打印输出
+
+```
+String message = String.format("Hello, %s. Next year,you'll be %d", name, age);
+```
+
+
+
+··
