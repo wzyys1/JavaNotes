@@ -69,5 +69,3 @@ String message = String.format("Hello, %s. Next year,you'll be %d", name, age);
 ```
 
 
-
-··
