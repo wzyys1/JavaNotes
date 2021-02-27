@@ -55,17 +55,37 @@
 
 - java 5 格式化输出 System.out.println()
 
-```
+	```java
 Double x = 10000.0 / 3.0;
 System.out.println("%8.2", x);
 // 输出结果 3333.33
 // 包含 8 个字符，精度为小数点后 2 个字符 这里打印一个 “前导空格” 和 7 个字符
-```
+	```
 
 - 可以使用 String.format方法 创建一个格式化的字符串，而不打印输出
 
-```
-String message = String.format("Hello, %s. Next year,you'll be %d", name, age);
-```
+  ```java
+  String message = String.format("Hello, %s. Next year,you'll be %d", name, age);
+  ```
 
+
+
+- 文件输入与输出
+
+  - 读取文件
+
+    ```java
+    // Scanner(Path p, String encoding)
+    // 构造一个使用给定字符编码 encoding， 从给定路径读取数据的 Scanner
+    Scanner in = new Scanner(Path.of("myfile.txt"), StandardCharsets.UTF_8)
+    ```
+  
+  - 写入文件
+  
+    ```java
+    // PrintWriter(String fileName)
+    PrintWriter out = new PrintWriter("myfile.txt", StandardCharsets.UTF_8)
+    ```
+
+## 3.8 控制流程
 
