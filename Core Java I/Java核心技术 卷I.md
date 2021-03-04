@@ -96,3 +96,76 @@ System.out.println("%8.2", x);
   - 只能跳出语句块，不能跳入
 
   - 标签必须放在希望跳出的最外层循环之前，并且必须紧跟一个冒号
+
+## 3.9 大数
+
+- 如果基本整数和浮点数精度不能满足需求，可以使用 `java.math ` 包下的两个类 ： 
+
+  - `BigInteger`  实现任意精度的 整数运算
+
+  - `BigDecimal` 实现任意精度的 浮点数运算
+
+    ```java
+    // 普通数值转换为大整数 
+    BigInteger a = BigInteger.valueof(100);
+    //使用带字符串
+    BigInteger reallyBig = new BigInteger("223234325373535353535");
+    ```
+  
+  - 大数需要使用 add() 和multiply () 
+  
+    ```java
+    lotteryOdds = lotteryOdds * (n - i + 1) / i;
+    // 如果使用大数
+    lotteryOdds = lotteryOdds.miltiply(BigInteger.valueOf(n - i + 1)).divide(BigInteger.valueOf(i));
+    ```
+  
+    
+
+## 3.10 数组
+
+- 声明数组
+
+  ```java
+  int[] a;
+  ```
+
+- 声明并初始化
+
+  ```java
+  int[] a = new int[100];
+  ```
+
+- 创建对象并提供初始值
+
+  ```java
+  int[] smallPrimes = {2,3,5,7,11,13,};
+  // 重新初始化
+  smallPrimes = new int[]{17,19,23,31,37};
+  ```
+
+- 数组默认初始化
+
+  |        | 数字数组 | boolean数组 | 对象数组 |
+  | :----: | :------: | :---------: | :------: |
+  | 初始值 |    0     |    false    |   null   |
+
+
+- 增强 for 循环  `for each`
+
+  - 依次处理数组中的每个元素，不用考虑下标
+
+  - 必须是实现了  `Iterable` 的类
+  - for 会遍历数据中的每一个 元素 而不是 下标
+
+- 打印数组中元素的简单方法
+
+  - `Arrays.toString(a)`  ,例如 `[2, 3, 5, 7, 11, 13]`
+
+- 数组拷贝：
+  - 引用同一个数组， 一个数组值变，另一个也变
+  - 将一个数组所有值拷贝到新的数组中 `Arrays.copyof(numbers, numbers.length * 2)`
+
+- **命令行参数**
+  - 每个 Java 程序 都会有一个带 `String arg[]` 的 main 方法，
+  -  mian 方法接收`String arg[]` 字符串数组 ，存储的是 命令行上指定的参数
