@@ -157,15 +157,20 @@ System.out.println("%8.2", x);
 
   - 必须是实现了  `Iterable` 的类
   - for 会遍历数据中的每一个 元素 而不是 下标
-
 - 打印数组中元素的简单方法
 
   - `Arrays.toString(a)`  ,例如 `[2, 3, 5, 7, 11, 13]`
-
-- 数组拷贝：
-  - 引用同一个数组， 一个数组值变，另一个也变
-  - 将一个数组所有值拷贝到新的数组中 `Arrays.copyof(numbers, numbers.length * 2)`
-
+- 数组拷贝
+  
+  - 用同一个数组， 一个数组值变，另一个也变
+- 将一个数组所有值拷贝到新的数组中 `Arrays.copyof(numbers, numbers.length * 2)`
 - **命令行参数**
   - 每个 Java 程序 都会有一个带 `String arg[]` 的 main 方法，
   -  mian 方法接收`String arg[]` 字符串数组 ，存储的是 命令行上指定的参数
+- 数组排序
+  - `Arrays.sort()` ：优化的快速排序算法
+- 不规则数组
+  -  Java 实际上没有多维数组，只有一维数组。多维数组被解释为 “数组的数组”
+
+# 第四章 对象与类
+
