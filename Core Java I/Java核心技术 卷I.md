@@ -68,8 +68,6 @@ System.out.println("%8.2", x);
   String message = String.format("Hello, %s. Next year,you'll be %d", name, age);
   ```
 
-
-
 - 文件输入与输出
 
   - 读取文件
@@ -108,7 +106,7 @@ System.out.println("%8.2", x);
     ```java
     // 普通数值转换为大整数 
     BigInteger a = BigInteger.valueof(100);
-    //使用带字符串
+    // 使用带字符串
     BigInteger reallyBig = new BigInteger("223234325373535353535");
     ```
   
@@ -177,11 +175,45 @@ System.out.println("%8.2", x);
 ## 4.1面向对象程序设计
 
 - 封装（数据隐藏）：将 `数据` 和 `行为` 分装在一个包中，并对对象的使用者隐藏具体的实现方式。
-  - 对象中的数据从称为 `实例字段`,操作数据的过程称为方法
+  - 对象中的数据从称为 `实例字段`, 操作数据的过程称为方法
 
 - 对象的主要特性
   - 行为、状态、标识
 - 类之间的关系
   - 依赖（“users-a”）: 一个类的方法使用或操纵另一个类的对象，我们就说一个类依赖于另一个类，减少依赖，减少类之间的耦合
   - 聚合（“has -a”）: 包容关系意味着类A的对象包含类B的对象
-  - 继承（“is-a”）: 
+  - 继承（“is-a”）: 表述一个更特殊的类和一个更一般的类之间的关系
+
+## 4.2 使用预定义类
+
+- 对象与对象变量
+
+  对象变量并没有实际包含对象，他只是引用了一个对象
+
+  ```java
+  Date deadline // 对象变量
+  deadline =  new Date() // 对象变量 “引用” 一个对象
+  ```
+
+- **所有Java对象都存储在堆中**：当一个对象包含另一个对象变量时，他只是包含着另一个堆对象的指针。
+
+- 时间是用距离一个固定 时间点 的毫秒数表示，这个 时间点 就是所谓的`纪元`，
+
+  - `UTC `（Coordinated Universal Time,  国际协调时间） 时间是：1970年 1 月 1 日 00：00：00
+  - `GMT`（Greenwich Mean Time, 格林尼治时间）
+
+- `LocalDate` 1.8
+
+  ```java
+  LocalDate.now() // 使用 静态工厂 方法帮你调用构造器
+  LocalDate newYearEve = LocalDate.of(1999, 12, 31);
+  LocalDate aThousandDaysLater = newYearEve.plusDays(1000);
+  int year = aThousandDaysLater.getYear(); // 2002
+  int month = aThousandDaysLater.getMonthValue(); // 09
+  int day = aThousandDaysLater.getDayofMonth(); // 2002
+  ```
+
+- 访问器方法 与 更改器方法
+
+  - 访问器方法: 只访问对象而不修改对象的方法
+
