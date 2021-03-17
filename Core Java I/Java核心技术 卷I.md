@@ -336,11 +336,10 @@ System.out.println("%8.2", x);
   - 为确保 类名 的绝对唯一性 ，包名 用一个 逆序形式的 `因特网域名`（这显然是唯一的）。
   - 从编译器的角度来看，**嵌套的包之间没有任何关系**，**每个包都是独立的类集合**。 eg： `java.util` 包 和  `java.util.jar` 包毫无关系。  :imp:  :imp:  :imp:  
 
-- 一个类 可以使用所属包的 所有类， 以及其他包的公共类
+- 一个类 可以使用所属包的 所有类， 以及其他包的                                                                                                                                                                            公共类
   - 使用 完全 限定名，包名 + 类名 eg ： `java.time.LocakDate today = java.time.LocakDate .now()`
   - 使用 `import` 导入，特定的类 或者 整个包
     - 允许 导入 `静态方法` 和 `静态字段` eg : ·`import static java.lang,System.*`  (不重要)
-  - 类文件中的 字节码 总是 使用完整的 包名 引用其他 类名
   
 - 将 类 放入 `包` 中： 必须将 包的名字 放在源文件开头。如果 没有在 `源文件` 中放置 `package 语句`  这个源文件属于 `无名包`，无名包没有包名，编译器将 字节码文件 也放在相同 的目录结构中。
 
@@ -352,13 +351,40 @@ System.out.println("%8.2", x);
   }
   ```
 
-  
-
 - 如果 `包` 与 目录不匹配，虚拟机就找不到类。
 
 - 访问权限  :imp:  :imp:  :imp:  
 
-|      public      |         default          |        private         |
+|      public      |       （default）        |        private         |
 | :--------------: | :----------------------: | :--------------------: |
 | 可以由任意类使用 | 被同一个包中所有方法访问 | 只能由定义他们的类使用 |
+
+- `类路径 `：是所有包含类文件的路径的集合
+
+  - 设置类路径，使 类 能被多个程序共享 至少应该包含：基目录、当前目录、JAR文件目录
+    - 把类文件放在一个目录
+    - JAR 文件 （ZIP 格式组织文件 和 子目录）放在一个目录
+    - 类文件路径 ： .  : JAR 文件路径  
+
+  - `类路径` 所列出的目录 和 归档文件（JAR） 是搜索类的 起点
+    
+- 虚拟机 先看 Java API类，找不到就 会 去 类路径找
+    
+- 设置 类路径： 
+  
+  - 用 `-classpath`  或者 `cp` 设置， 
+  
+      ```
+      java -classpath  /home/user/classdir:.:/home/user/archives/archive.jar MyProg
+      java -classparh c:\classdir:.:c:archives/archive.jar MyProg
+    ```
+  
+  - 也可 通过 环境变量 `CLASSPATH` 来指定
+  
+      ```
+      set CLASSPATH = c:\classdir:.:c:archives/archive.jar
+    ```
+  
+
+## 4.8 JAR 文件
 
