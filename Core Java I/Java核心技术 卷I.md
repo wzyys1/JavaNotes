@@ -400,3 +400,33 @@ System.out.println("%8.2", x);
 
 ## 4.9 文档注释
 
+- 文档注释 用到 JDK 的 `javadoc` 工具，可以把 源文件 生成一个 HTML 文档。eg：联机文档                                       
+  - 每个`/**...*/ ` 文档注释包含 `标记` + `自由格式文本`
+  - 标记有很多种
+    - 类注释
+    - 方法注释： `@param` 、`@return`、`@throw`
+    - 字段注释 
+    - 通用注释： `@author`、 `@version`、 `@see`、`@link`
+    - 包注释：需要在每一个包目录中添加一个单独的文件
+
+- 注释抽取
+
+  ```
+  // 一个包
+  javadoc -d docDirectory nameOfPackage
+  // 多个包
+  javadoc -d docDirectory nameOfPackage1 nameOfPackage2
+  // 无名包
+  javadoc -d docDirectory *.java
+  ```
+
+## 4.10 类设计技巧  
+
+- 一定保证数据私有
+- 一定要对数据进行初始化
+- 不要在类中使用过多的基本类型
+- 不是所有字段都需要单独的 字段访问器 和 字段更改器
+- 分解有过多职责的类
+- 类名与方法名能够体现他们的职责：有一个能反映其含义的名字
+- 优化使用不可变的类
+
