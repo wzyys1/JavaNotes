@@ -367,9 +367,9 @@ System.out.println("%8.2", x);
     - 类文件路径 ： .  : JAR 文件路径  
 
   - `类路径` 所列出的目录 和 归档文件（JAR） 是搜索类的 起点
-    
+  
 - 虚拟机 先看 Java API类，找不到就 会 去 类路径找
-    
+  
 - 设置 类路径： 
   
   - 用 `-classpath`  或者 `cp` 设置， 
@@ -387,4 +387,16 @@ System.out.println("%8.2", x);
   
 
 ## 4.8 JAR 文件
+
+- Java归档（JAR）文件：将应用程序打包，只向用户提供一个单独文件。
+- JAR是压缩的，用的 ZIP压缩格式。
+
+	```
+	// jar cvf jarFileName file1 file2 ...
+	jar cvf CalculatorClasses.jar *.class icon.gif
+	```
+
+-  `清单文件`： 每个JAR都有一个 ，描述归档文件的特殊属性，被命名为 `MANIFEST.MF` 在JAR文件 `META-INF`子目录中。
+
+## 4.9 文档注释
 
