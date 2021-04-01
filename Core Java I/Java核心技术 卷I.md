@@ -460,6 +460,8 @@ System.out.println("%8.2", x);
   
   ---
   
+  > `多态` 总结 :
+  
   - `重载解析`（词如其名，重载过程解析...）
     - 编译器确定方法调用中提供的参数类型，并去相同名字中去找与所提供的参数类型完全匹配的方法，如果存在，就选择这个方法
     - `方法的签名` : 方法名称 + 参数 （不包括方法返回值）
@@ -467,6 +469,10 @@ System.out.println("%8.2", x);
     - `静态绑定`  ： 编译器 准确知道调用哪个方法, private 方法、 static方法、 final方法、构造器
     - `动态绑定`： 要调用方法 依赖于 **隐式参数** 的 **实际**类型，必须在运行时使用动态绑定 ，采用该方法时，虚拟机必须调用与 该对象变量所引用 对象的实际类型对应的那个方法。（有调用，没有向上找，由于时间开销大，虚拟机预先会为每个类创建  `方法表 `  方便搜索）
     - java中 `动态绑定` 是 **默认的** , c++ 则需要将成员函数声明为 `virtual`， 如果不希望这样，在 java 中使用  `final`  修饰该函数）:imp::imp::imp:
+  - 多态总结就说了两个问题：
+  
+  1. 子类对象可以传给父类引用，但是只能调用父类的方法（如果调用实际类型的方法父类中没有定义会报错）
+  2. 如果子类把父类定义的方法覆盖了，虚拟机就会动态绑定，调用子类对应同名方法
   
   ---
   
@@ -490,7 +496,7 @@ System.out.println("%8.2", x);
 
 ## 5.2 Object：所有类的超类
 
-- 在 Java 中，只有 基本类型 不是对象，所有数组类型（不管是对象数组还是基本类型数组） 都扩展了Object 类
+- 在 Java 中，只有 基本类型 不是对象，所有数组类型（不管是 对象数组 还是 基本类型数组 ）都扩展了Object 类
 
   ```
   Employee[] staff = new Employee[10];
@@ -500,6 +506,70 @@ System.out.println("%8.2", x);
 
 - `equal方法`： 确定两个对象引用是否相等（还有基于状态检测是否相等）， 为了防止调用方法的对象为 null，可以采用 `Objects.equals()`  方法。
 
-- `getClass方法`: 返回一个对象所属的类
+  - 子类可以有自己相等性概念，则 对称性需求 将强制使用 getClass 检测
+
+  - 如果由超类决定 相等性 概念， 可以使用  `instanceof` 检测，这样可以在不同子类之间进行相等性比较
+
+    ---
+
+    > 完美  `equals `  方法建议：
+  >
+    
+  1.  显示参数命名为 `otherObject`
+    
+    2.  检测 `this` 和  `otherObject` 是否相等
+    
+       ```java
+       if(this == otherObect) return true;
+       ```
+    
+    3. 检测 `otherObject` 是否为 null，如果为 null，返回 false。
+    
+       ```java
+       if(otherObject == null) return false;
+       ```
+    
+    4. 比较 `this`  与 `otherObject` 类
+    
+       ```java
+       // 如果 equals 的语义可以在子类中改变，就使用 getClass检测：
+       if(getClass() != otherObject.getClass()) return false
+       // 如果所有子类都有相同的 相等性 语义，可以在父类中 使用 instanceof 检测
+       if(!(otherObject instanceof ClassName) return false // ClassName 子类变量名
+       ```
+    
+    5. 将 `otherObject ` 强制转换为相应类类型变量
+    
+       ```java
+       ClassName other = （ClassName）otherObject
+       ```
+    
+    6. 根据相等的概念来比较字段，使用 `==` 来比较 基本类型字段，使用  `Objects.equals`  比较对象字段。
+    
+       ```java
+       return field1 == other.field1
+       	&& Objects.equals(field2, other.field2)
+       	&& ...;
+       ```
+    
+    7. 在子类重新定义了 `equals`,就要在其中包含一个 `super.equals(other)` 调用
+    
+    ---
+
+- `getClass方法 ` : 返回这个对象运行时的类( 返回Class类型的对象 )
 
 - 如果要定义一个 覆盖超类方法的 子类方法，可以使用 `Override 标记` 。如果这个方法并没有覆盖超类的任何方法，就会看到一个错误报告。
+
+- `散列码`（hash code）: 由对象导出的一个 **整型** 值 。`Object类` 的 hashcode 由 **对象的存储地址** 导出，String 的散列码 hashcode 的由 **内容** 导出（这就是为什么一样内容的 String 字符串导出的 hashcode值相同）
+
+  ```java
+  // Sting 类型中的 hashcode 定义方式
+  int hash = 0
+  for(int i = 0; i.length(); i++)
+      hash = 31 * hash + charAt(i);
+  ```
+
+  - 重新定义了 equals 方法，就要重新定义 hashcode 方法,两者必须 **相容**（equal 方法 返回 true， hashcode 方法必须返回相同的值 ） eg：如果比较 Employee.equals比较员工ID， 则 hashcode 方法就需要散列 ID，而不是 姓名 和 存储地址
+  - 合理组合实例字段散列码，以便能让不同对象产生的散列码分布更均匀 eg: 可用 `objects.hash(args1,...,argsn)` 数组可用 `Arrays.hashCode(xxx[] a)` , 散列码由数组元素的散列码组成
+
+- 
