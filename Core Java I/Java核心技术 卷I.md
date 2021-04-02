@@ -1,6 +1,6 @@
 本书的示例源码网址: http://horstmann.com/corejava
 
-# 第 3 章 Java 的基础设计结构
+# 第 三 章 Java 的基础设计结构
 
 ## 3. 1 有个简单java应用程序 
 
@@ -436,7 +436,7 @@ System.out.println("%8.2", x);
 
 ## 5.1 类、超类和子类
 
-- `extends` 表示 继承，java 中 的所有继承都是 `公有继承 ` (没有 c++ 中的 私有 和 保护继承) :imp: :imp: :imp: 
+- `extends` 表示 继承，java 中的 所有继承都是 `公有继承 `  (没有 c++ 中的 私有 和 保护继承) :imp: :imp: :imp: 
 
 - 子类 调用 父类方法名时 用  `super. 超类方法名`
 
@@ -462,17 +462,18 @@ System.out.println("%8.2", x);
   
   > `多态` 总结 :
   
-  - `重载解析`（词如其名，重载过程解析...）
-    - 编译器确定方法调用中提供的参数类型，并去相同名字中去找与所提供的参数类型完全匹配的方法，如果存在，就选择这个方法
-    - `方法的签名` : 方法名称 + 参数 （不包括方法返回值）
-  - `动态绑定` 与 `静态绑定` 
-    - `静态绑定`  ： 编译器 准确知道调用哪个方法, private 方法、 static方法、 final方法、构造器
-    - `动态绑定`： 要调用方法 依赖于 **隐式参数** 的 **实际**类型，必须在运行时使用动态绑定 ，采用该方法时，虚拟机必须调用与 该对象变量所引用 对象的实际类型对应的那个方法。（有调用，没有向上找，由于时间开销大，虚拟机预先会为每个类创建  `方法表 `  方便搜索）
-    - java中 `动态绑定` 是 **默认的** , c++ 则需要将成员函数声明为 `virtual`， 如果不希望这样，在 java 中使用  `final`  修饰该函数）:imp::imp::imp:
-  - 多态总结就说了两个问题：
-  
-  1. 子类对象可以传给父类引用，但是只能调用父类的方法（如果调用实际类型的方法父类中没有定义会报错）
-  2. 如果子类把父类定义的方法覆盖了，虚拟机就会动态绑定，调用子类对应同名方法
+  > - `重载解析`（词如其名，重载过程解析...）
+  >   - 编译器确定方法调用中提供的参数类型，并去相同名字中去找与所提供的参数类型完全匹配的方法，如果存在，就选择这个方法
+  >   - `方法的签名` : 方法名称 + 参数 （不包括方法返回值）
+  > - `动态绑定` 与 `静态绑定` 
+  >   - `静态绑定`  ： 编译器 准确知道调用哪个方法, private 方法、 static方法、 final方法、构造器
+  >   - `动态绑定`： 要调用方法 依赖于 **隐式参数** 的 **实际**类型，必须在运行时使用动态绑定 ，采用该方法时，虚拟机必须调用与 该对象变量所引用 对象的实际类型对应的那个方法。（有调用，没有向上找，由于时间开销大，虚拟机预先会为每个类创建  `方法表 `  方便搜索）
+  >   - java中 `动态绑定` 是 **默认的** , c++ 则需要将成员函数声明为 `virtual`， 如果不希望这样，在 java 中使用  `final`  修饰该函数）:imp::imp::imp:
+  > - 多态其实就说了两个问题：
+  >
+  > 	1. 子类对象可以传给父类引用，但是只能调用父类的方法（如果调用实际类型的方法父类中没有定义会报错）
+  > 	2. 如果子类把父类定义的方法覆盖了，虚拟机就会动态绑定，调用子类对应同名方法
+  >
   
   ---
   
@@ -506,70 +507,120 @@ System.out.println("%8.2", x);
 
 - `equal方法`： 确定两个对象引用是否相等（还有基于状态检测是否相等）， 为了防止调用方法的对象为 null，可以采用 `Objects.equals()`  方法。
 
-  - 子类可以有自己相等性概念，则 对称性需求 将强制使用 getClass 检测
+  - 子类可以有自己 相等性 概念，则 对称性需求 将强制使用 getClass 检测
 
   - 如果由超类决定 相等性 概念， 可以使用  `instanceof` 检测，这样可以在不同子类之间进行相等性比较
 
     ---
 
     > 完美  `equals `  方法建议：
-  >
     
-  1.  显示参数命名为 `otherObject`
-    
-    2.  检测 `this` 和  `otherObject` 是否相等
-    
-       ```java
-       if(this == otherObect) return true;
-       ```
-    
-    3. 检测 `otherObject` 是否为 null，如果为 null，返回 false。
-    
-       ```java
-       if(otherObject == null) return false;
-       ```
-    
-    4. 比较 `this`  与 `otherObject` 类
-    
-       ```java
-       // 如果 equals 的语义可以在子类中改变，就使用 getClass检测：
-       if(getClass() != otherObject.getClass()) return false
-       // 如果所有子类都有相同的 相等性 语义，可以在父类中 使用 instanceof 检测
-       if(!(otherObject instanceof ClassName) return false // ClassName 子类变量名
-       ```
-    
-    5. 将 `otherObject ` 强制转换为相应类类型变量
-    
-       ```java
-       ClassName other = （ClassName）otherObject
-       ```
-    
-    6. 根据相等的概念来比较字段，使用 `==` 来比较 基本类型字段，使用  `Objects.equals`  比较对象字段。
-    
-       ```java
-       return field1 == other.field1
-       	&& Objects.equals(field2, other.field2)
-       	&& ...;
-       ```
-    
-    7. 在子类重新定义了 `equals`,就要在其中包含一个 `super.equals(other)` 调用
-    
-    ---
-
+    > - 显示参数命名为 `otherObject` 
+    > - 检测 `this` 和  `otherObject` 是否相等
+  	>	```java
+			if(this == otherObect) return true;
+				```
+    > - 检测 `otherObject` 是否为 null，如果为 null，返回 false。
+    > 	```java
+    	if(otherObject == null) return false;
+    > 	```
+    > - 比较 `this`  与 `otherObject` 类  
+    >	```java
+      // 如果 equals 的语义可以在子类中改变，就使用 getClass检测：
+    	if(getClass() != otherObject.getClass()) return false
+	  	// 如果所有子类都有相同的 相等性 语义，可以在父类中 使用 instanceof 检测
+  			if(!(otherObject instanceof ClassName) return false // ClassName子类变量名
+  	>	```
+    > - 将 `otherObject ` 强制转换为相应类类型变量
+    >	```java
+    	ClassName other = （ClassName）otherObject
+    >	```
+    > - 根据相等的概念来比较字段，使用 `==` 来比较 基本类型字段，使用  `Objects.equals`  比较对象字段。 
+    > 	```java
+    	return field1 == other.field1
+    			&& Objects.equals(field2, other.field2)
+    			&& ...;
+    >	```
+  	> - 在子类重新定义了 `equals`,就要在其中包含一个 `super.equals(other)` 调用
+  	
+  	---
+  
 - `getClass方法 ` : 返回这个对象运行时的类( 返回Class类型的对象 )
 
 - 如果要定义一个 覆盖超类方法的 子类方法，可以使用 `Override 标记` 。如果这个方法并没有覆盖超类的任何方法，就会看到一个错误报告。
 
-- `散列码`（hash code）: 由对象导出的一个 **整型** 值 。`Object类` 的 hashcode 由 **对象的存储地址** 导出，String 的散列码 hashcode 的由 **内容** 导出（这就是为什么一样内容的 String 字符串导出的 hashcode值相同）
+- `散列码`（hash code）: 由对象导出的一个 **整型** 值 。
+
+  - `Object类` 的 hashcode 由 **对象的存储地址** 导出
+  - String 的散列码 hashcode 的由 **内容** 导出（这就是为什么一样内容的 String 字符串导出的 hashcode值相同）
+
+  	```java
+  	// Sting 类型中的 hashcode 定义方式
+  	int hash = 0
+  	for(int i = 0; i.length(); i++)
+      	hash = 31 * hash + charAt(i);
+  	```
+
+  - 重新定义了 `equals方法`，就要重新定义 `hashcode方法`, 两者必须 **相容**（`equal方法` 返回 true， `hashcode方法` 必须返回相同的值 ） eg：如果比较 Employee.equals 比较员工 ID， 则 `hashcode方法` 就需要散列 ID，而不是 姓名 和 存储地址
+  - 合理组合实例字段散列码，以便能让不同对象产生的散列码分布更均匀 
+    - 可用 `objects.hash(args1,...,argsn)` ：对各个参数调用`Objects.hashCode()`,并组合这些散列码
+    - 数组可用 `Arrays.hashCode(xxx[] a)` , 散列码由数组元素的散列码组成
+
+- `toString方法` ：返回表示对象值的一个字符串。
+
+  - 遵循格式一般为：类名 （`getClass().getName`）+  一对方括号括起来的字段值。
+  - 只要对象与  `+` 号连接起来。Java编译器就会自动调用 `toString 方法` 来 获取这个 对象的字符串描述
+
+  - `Object类` 定义的 `toString方法` 。可以打印对象的 类名 和 散列码
+  - 数组继承了`Object类` 的 `toString方法` ，想要格式打印使用：`Arrays.toString`
+
+
+## 5.3 泛型数组列表 - ArrayList
+
+- 在老版本中，使用 `vector类` 实现动态数组，但目前 `ArrayList类` 更加高效，因舍弃以前的
+
+- 如果估计出数组可能存储的 元素数量， 可以调用 `ensureCapacity` 方法，这样前 n 次add调用不会带来开销很大的重新分配空间。
+
+- `trimToSize方法`： 将存储块大小调整为保存当前元素数量所需要的 存储空间，垃圾回收器将回收多余空间
+
+- 自动扩容的便利，增加了访问元素语法的复杂程度。必须使用 `get` 和 `set` 方法。
+
+- `ArrayList` 需要掌握的方法:
+  - `E set(int index, E obj)` 
+  - `E get(int index)`
+  - `void add(int index, E obj)` 
+  - `E remove(int index)`
+
+	---
+	> 小技巧  : 既可以灵活扩展数组，又可以方便访问数组元素
+
+	>	```java
+	>	var list = new ArrayList<X>();
+	>	while(...){
+	>		x = ...;
+	>		list.add(x);
+	>	}
+	>	
+	>	var a = new X[list.size()]
+	>	list.toArray(a)
+	>```
+	
+	---
+
+## 5.4 对象包装器 与 自动装箱
+
+- `包装器类` 是 **不可变** 的， 一旦构造，不允许更改包装在其中的值。包装器是 `final`，不能派生他的子类
+- 自动装箱 和拆箱 是 `编译器` 的工作，不是 `虚拟机` 的。`编译器` 在生成类的字节码时就会插入必要的 方法调用，`虚拟机` 只是执行 这些字节码
+
+## 5.5 参数数量可变的方法
+
+- 方法参数列表用到 `...`,  相当于一个对应数据类型的数组，举个例子，
 
   ```java
-  // Sting 类型中的 hashcode 定义方式
-  int hash = 0
-  for(int i = 0; i.length(); i++)
-      hash = 31 * hash + charAt(i);
+  // 与 double[] 完全一样
+  public static double max(double... values)
   ```
 
-  - 重新定义了 equals 方法，就要重新定义 hashcode 方法,两者必须 **相容**（equal 方法 返回 true， hashcode 方法必须返回相同的值 ） eg：如果比较 Employee.equals比较员工ID， 则 hashcode 方法就需要散列 ID，而不是 姓名 和 存储地址
-  - 合理组合实例字段散列码，以便能让不同对象产生的散列码分布更均匀 eg: 可用 `objects.hash(args1,...,argsn)` 数组可用 `Arrays.hashCode(xxx[] a)` , 散列码由数组元素的散列码组成
+## 5.6 枚举类
 
-- 
+ 
