@@ -1,6 +1,6 @@
 本书的示例源码网址: http://horstmann.com/corejava
 
-# 第 三 章 Java 的基础设计结构
+# 第三章 Java的基础设计结构
 
 ## 3. 1 有个简单java应用程序 
 
@@ -623,4 +623,32 @@ System.out.println("%8.2", x);
 
 ## 5.6 枚举类
 
- 
+- 自定义 `枚举类型`，`枚举类型` 包括有限个命名的值。
+
+  ```java
+  enum Size {SMALL, MEDIUM, LARGE, EXTRA_LARGE}
+  // 声明 这种类型的变量
+  Size s = Size.MEDIUM
+  // Size类型 只能存储 这个类型声明中给定的某个枚举值， 或者 nul
+  ```
+
+- 实际上声明定义的类型 是 **一个类**， 他刚好有 4 个对象（枚举**常量**） ，**不能再构造新的对象**。因此比较两个枚举类型值 时 用 `==` 而非 `equals`
+
+- 所有的枚举类型 都是 `Enum类` 的子类，继承了这个类很多方法
+
+  - `toString()`， 返回枚举常量名  eg:  `Size.SMALL.toString() ` 返回字符串 “SMALL”
+
+  - `valueOf()`, ` toString()` 逆方法,  返回给定类中有指定名字的枚举常量  (枚举对象)
+
+    ```java
+    // 将 是设置为 Size.SMALL
+    Size s = Enum.valueOf(Size.class(), "SMALL")
+    ```
+    
+  - `static values()`, 返回一个包含全部枚举值的数组 eg：`Size[] values = Size.values();`
+
+  - `ordinal()`： 返回 enum 声明中 枚举常量的位置，从 0 开始计数 eg: `Suze.MEDIUM.ordinal()` 返回 1
+  
+## 5.7 反射
+
+   
