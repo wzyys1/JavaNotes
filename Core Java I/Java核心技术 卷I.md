@@ -651,4 +651,50 @@ System.out.println("%8.2", x);
   
 ## 5.7 反射
 
-   
+- `反射` ： 能够分析 类能力 的程序
+
+- 程序运行期间，`Java运行时系统` 会始终 为 所有对象 维护一个 `运行时类型标识`， 虚拟机利用这个信息选择要执行的正确的方法。他会跟踪 每个对象所属类。可以使用一个特殊类访问这些信息，即 `Class类`。 
+
+  - 就像之前 Employee对象 描述一个特定员工的属性一样，`Class对象` 会描述一个特定类的属性。
+
+  - 获取 `Class对象` 的方法
+
+    - 使用 `Object类` 中的 `getClass方法`
+
+      ```java
+      Employee e;
+      ... 
+      Class cl = e.getClass();
+      ```
+
+    - 使用 `Class类` 的静态方法 `forName` 获得类名所对应的对象(字符串会变化，使用这个类)
+
+      ```java
+      String className = "java.util.Random";
+      Class cl = Class.forName(className);
+      ```
+
+    - 如果 `T` 是 java 任意类型，使用 `T.class` 将代表匹配的 类对象。
+
+      ```java
+      Class cl1 = Random.class;
+      Class cl2 = int.class;
+      Class cl3 = DOuble[].class;
+      ```
+
+  - 一个 `Class对象` 实际上 **表示的是一个类型，**这可能是 一个类，也可能不是 ，eg： `int.class`
+
+  - `Class类` 实际上是一个 泛型类。 eg： `Employee.class` 的类型是 `Class<Employee>`
+  
+  - 虚拟机为  **每个类型** 管理 **唯一 一个** `Class对象`。所以上一节中使用`==`实现两个类的比较（**言外之意是：判断是否属于同一个类生成的对象**）： `if(e.getClass() == Employee.class)`
+  
+- 使用 `Class类`对象，构造类的实例。调用`getConstructor` 方法将得到一个`Constructor` 类型对象，然后使用`newInstance` 方法来构造实例
+
+  ```java
+  var className = "java.util.Random";
+  Class cl = Class.forName(className);
+  Object = cl.getConstructor().newInstance();
+  ```
+
+  
+
