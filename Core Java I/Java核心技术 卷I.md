@@ -657,7 +657,7 @@ System.out.println("%8.2", x);
 
   - 就像之前 Employee对象 描述一个特定员工的属性一样，`Class对象` 会描述一个特定类的属性。
 
-  - 获取 `Class对象` 的方法
+  - 获取 `Class对象` 的方法：
 
     - 使用 `Object类` 中的 `getClass方法`
 
@@ -696,5 +696,86 @@ System.out.println("%8.2", x);
   Object = cl.getConstructor().newInstance();
   ```
 
-  
+- `异常` 的种类：`非检查型异常` 和 `检查型异常`
 
+  - `非检查型异常`：编译器不希望你对这些异常提供处理器。
+  - `检查型异常`：编译器将会检查你（程序员）是否知道这个异常并做好准备来处理后果
+
+- 利用反射分析类的能力：反射机制的重要内容 - `检查类结构`
+
+  - `java.lang.reflect` 包中有三个类： `Field`、`Method`、`Constructor ` 分别用于描述 类的字段、方法、和 构造器。带 Declared 修饰的方法包括从超类继承过来的，不带的只是这个类的。
+    - `Field[] getFields()`
+    - `Field[] getDeclaredFields()`
+    - `Method[] getMethods()`
+    - `Method[] getDeclaredMethods()`
+    - `Constructor[] getConstructors()`
+    - `Constructor[] getDeclaredConstructors()`
+  - 打印对应方法、字段、构造器的修饰符，先获取 修饰符 对应的整数值:  `cl.getModifiers()` , 然后利用该类的静态方法打印：`Modifier.toStirng(cl.getModifiers())`
+
+- 使用 反射 在运行时分析对象: 可以利用反射机制, 查看在编译时还不知道的对象字段
+
+  - `Field类` 的 `get方法` 可以获取对象字段的值，也可以通过 `set(obj,value)`设置对象字段的值
+
+    - 下面例子有一处不恰当之处，`name` 是私有属性,会抛出 `IllegalAccessException异常` 。`Java安全机制` **允许查看有哪些字段，如果想读写哪些字段，除非拥有访问权限** 。:imp:  :imp:  :imp:  
+
+    	```java
+    	var harry = new Emptyee("Harry Hacker", 50000, 10, 1, 1989);
+    	Class cl = harry.getClass();
+    	Field f = cl.getDeclaredField("name");
+    	Object v = f.get(harry)
+    	```
+
+  - `反射机制` 的 默认行为，受限制于Java的 `访问控制` 。可以用  `Field`、`Method`、`Constructor ` 的`setAccessible方法` 修改权限，但是也可能被拒绝。eg：`f.setAccessible(true);`
+
+- 使用 `反射` 编写 通用 `泛型数组` 代码
+
+  - 使用反射的 **核心原因**：可以 将得到的 `Object泛型数组` 转换回对应类型 。
+
+  - `java.lang.reflect包` 中的 `Array类`，允许动态地创建数组
+
+  	- 举一个 下面例子, 编写一个 通用方法
+  
+    	```java
+    	var a = new Employee[100];
+    	...
+    	// 数组已满，需要扩充数组
+  	a = Arrays.copyof(a, 2 * a.length);
+    	```
+  
+    - 坏的尝试，由于java数组会记住每个元素的类型，即创建数组时候 new表达式 使用的类型。
+    
+      ```java
+      public static Object[] badCopyOf(Object[] a, int newLength)
+      {
+      	var = newArray = new Object[newLength];
+      	System.arraycopy(a, 0, newArray, 0, Math.min(a.length, newLength));
+      	return newArray;
+      }
+      ```
+    
+    - 上面的不好的原因是：返回的 `Object[]数组` 无法转换成 `Employee[] 数组` 。因此，为了 **编写通用代码**，**需要能够创建与原数组类型相同的数组**。
+    
+      ```java
+      Public static Object goodCopyof(Object a, int newLength)
+      {
+          // 获得 a 数组的类对象
+          Class cl = a.getClass();
+          // 确认他是一个数组
+          if(!cl.isArray()) return null;
+          // 确定数组的正确类型
+          Class componentType = cl.getComponentType();
+          int length = Array.getLength(a);
+          Object newArray = Array.newInstance(componentType, newLength);
+          System.arraycopy(a, 0, newArray, 0, Math.min(a.length, newLength));
+      	return newArray;    
+      }
+      ```
+    
+      - 这里 用 `Object` 而不用 `Object[]` 的原因是：为了使该方法可以扩展 任意类型数组 而不单单是对象数组。
+    
+        ```
+        int[] a ={1, 2, 3, 4, 5};
+        a = (int[]) goodCopyof(a.10);
+        ```
+    
+        
