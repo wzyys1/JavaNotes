@@ -438,7 +438,7 @@ System.out.println("%8.2", x);
 
 - `extends` 表示 继承，java 中的 所有继承都是 `公有继承 `  (没有 c++ 中的 私有 和 保护继承) :imp: :imp: :imp: 
 
-- 子类 调用 父类方法名时 用  `super. 超类方法名`
+- 子类 调用 父类方法时 用  `super. 超类方法名()`
 
 - `子类` 没有 显式 调用 `超类` 的 构造器，自动调用 `超类` 的 无参构造器，如果 `超类` 没有，`子类 ` 也没调用其他构造器，就会报错。:imp::imp::imp:
 
@@ -467,9 +467,9 @@ System.out.println("%8.2", x);
   >   - `方法的签名` : 方法名称 + 参数 （不包括方法返回值）
   > - `动态绑定` 与 `静态绑定` 
   >   - `静态绑定`  ： 编译器 准确知道调用哪个方法, private 方法、 static方法、 final方法、构造器
-  >   - `动态绑定`： 要调用方法 依赖于 **隐式参数** 的 **实际**类型，必须在运行时使用动态绑定 ，采用该方法时，虚拟机必须调用与 该对象变量所引用 对象的实际类型对应的那个方法。（有调用，没有向上找，由于时间开销大，虚拟机预先会为每个类创建  `方法表 `  方便搜索）
+  >   - `动态绑定`： 要调用方法 依赖于 **隐式参数** 的 **实际**类型，必须在运行时使用动态绑定 ，采用该方法时，虚拟机必须调用与 该对象变量所引用 对象的实际类型对应的那个方法。（有调用，没有向上找，由于时间开销大，虚拟机是预先会为每个类创建  `方法表 `  方便搜索）
   >   - java中 `动态绑定` 是 **默认的** , c++ 则需要将成员函数声明为 `virtual`， 如果不希望这样，在 java 中使用  `final`  修饰该函数）:imp::imp::imp:
-  > - 多态其实就说了两个问题：
+  > - 多态其实就说了两个问题：:imp::imp::imp:
   >
   > 	1. 子类对象可以传给父类引用，但是只能调用父类的方法（如果调用实际类型的方法父类中没有定义会报错）
   > 	2. 如果子类把父类定义的方法覆盖了，虚拟机就会动态绑定，调用子类对应同名方法
@@ -513,7 +513,7 @@ System.out.println("%8.2", x);
 
     ---
 
-    > 完美  `equals `  方法建议：
+    > 完美  `equals `  方法建议： :imp:  :imp:  :imp:  
     
     > - 显示参数命名为 `otherObject` 
     > - 检测 `this` 和  `otherObject` 是否相等
@@ -547,15 +547,15 @@ System.out.println("%8.2", x);
   
 - `getClass方法 ` : 返回这个对象运行时的类( 返回Class类型的对象 )
 
-- 如果要定义一个 覆盖超类方法的 子类方法，可以使用 `Override 标记` 。如果这个方法并没有覆盖超类的任何方法，就会看到一个错误报告。
+- 如果要定义一个 覆盖超类方法的 子类方法，可以使用 `Override标记` 。如果这个方法并没有覆盖超类的任何方法，就会看到一个错误报告。
 
-- `散列码`（hash code）: 由对象导出的一个 **整型** 值 。
+- `散列码`（hash code）: 由对象导出的一个 **整型** 值 。 :imp:  :imp:  :imp:  
 
   - `Object类` 的 hashcode 由 **对象的存储地址** 导出
-  - String 的散列码 hashcode 的由 **内容** 导出（这就是为什么一样内容的 String 字符串导出的 hashcode值相同）
+  - String 的散列码 hashcode 的由 **内容** 导出（这就是为什么一样内容的 String字符串 导出的 hashcode值相同） :imp:  :imp:  :imp:  
 
   	```java
-  	// Sting 类型中的 hashcode 定义方式
+  	// Sting类型 中的 hashcode 定义方式
   	int hash = 0
   	for(int i = 0; i.length(); i++)
       	hash = 31 * hash + charAt(i);
@@ -569,31 +569,32 @@ System.out.println("%8.2", x);
 - `toString方法` ：返回表示对象值的一个字符串。
 
   - 遵循格式一般为：类名 （`getClass().getName`）+  一对方括号括起来的字段值。
-  - 只要对象与  `+` 号连接起来。Java编译器就会自动调用 `toString 方法` 来 获取这个 对象的字符串描述
+  - 只要对象与  `+` 号连接起来。Java编译器就会自动调用 `toString 方法` 来 获取这个对象的字符串描述
 
   - `Object类` 定义的 `toString方法` 。可以打印对象的 类名 和 散列码
-  - 数组继承了`Object类` 的 `toString方法` ，想要格式打印使用：`Arrays.toString`
+  - 数组继承了`Object类` 的 `toString方法` ，想要格式打印使用：`Arrays.toString()`
 
 
 ## 5.3 泛型数组列表 - ArrayList
 
-- 在老版本中，使用 `vector类` 实现动态数组，但目前 `ArrayList类` 更加高效，因舍弃以前的
+- 在老版本中，使用 `vector类` 实现动态数组，但目前 `ArrayList类` 更加高效，因舍弃以前的。
 
 - 如果估计出数组可能存储的 元素数量， 可以调用 `ensureCapacity` 方法，这样前 n 次add调用不会带来开销很大的重新分配空间。
 
 - `trimToSize方法`： 将存储块大小调整为保存当前元素数量所需要的 存储空间，垃圾回收器将回收多余空间
 
-- 自动扩容的便利，增加了访问元素语法的复杂程度。必须使用 `get` 和 `set` 方法。
+- 自动扩容的便利，增加了访问元素语法的复杂程度。必须使用 `get` 和 `set` 方法访问和设置元素。
 
 - `ArrayList` 需要掌握的方法:
+  
   - `E set(int index, E obj)` 
   - `E get(int index)`
   - `void add(int index, E obj)` 
-  - `E remove(int index)`
-
+- `E remove(int index)`
+	
 	---
-	> 小技巧  : 既可以灵活扩展数组，又可以方便访问数组元素
-
+> 小技巧  : 既可以灵活扩展数组，又可以方便访问数组元素
+	
 	>	```java
 	>	var list = new ArrayList<X>();
 	>	while(...){
@@ -610,7 +611,7 @@ System.out.println("%8.2", x);
 ## 5.4 对象包装器 与 自动装箱
 
 - `包装器类` 是 **不可变** 的， 一旦构造，不允许更改包装在其中的值。包装器是 `final`，不能派生他的子类
-- 自动装箱 和拆箱 是 `编译器` 的工作，不是 `虚拟机` 的。`编译器` 在生成类的字节码时就会插入必要的 方法调用，`虚拟机` 只是执行 这些字节码
+- 自动装箱 和拆箱 是 `编译器` 的工作，不是 `虚拟机` 的。`编译器` 在生成类的字节码时就会插入必要的方法调用，`虚拟机` 只是执行 这些字节码
 
 ## 5.5 参数数量可变的方法
 
@@ -629,10 +630,10 @@ System.out.println("%8.2", x);
   enum Size {SMALL, MEDIUM, LARGE, EXTRA_LARGE}
   // 声明 这种类型的变量
   Size s = Size.MEDIUM
-  // Size类型 只能存储 这个类型声明中给定的某个枚举值， 或者 nul
+  // Size类型 只能存储 这个类型声明中给定的某个枚举值， 或者 null
   ```
 
-- 实际上声明定义的类型 是 **一个类**， 他刚好有 4 个对象（枚举**常量**） ，**不能再构造新的对象**。因此比较两个枚举类型值 时 用 `==` 而非 `equals`
+- 实际上声明定义的类型 是 **一个类**， 他刚好有 4 个对象（枚举**常量**） ，**不能再构造新的对象**。因此比较两个枚举类型值 时 用 `==` 而非 `equals` :imp:  :imp:  :imp:  
 
 - 所有的枚举类型 都是 `Enum类` 的子类，继承了这个类很多方法
 
@@ -653,7 +654,7 @@ System.out.println("%8.2", x);
 
 - `反射` ： 能够分析 类能力 的程序
 
-- 程序运行期间，`Java运行时系统` 会始终 为 所有对象 维护一个 `运行时类型标识`， 虚拟机利用这个信息选择要执行的正确的方法。他会跟踪 每个对象所属类。可以使用一个特殊类访问这些信息，即 `Class类`。 
+- 程序运行期间，`Java运行时系统` 会始终为 所有对象 维护一个 `运行时类型标识`， 虚拟机利用这个信息选择要执行的正确的方法。他会跟踪每个对象所属类。可以使用一个特殊类访问这些信息，即 `Class类`。 
 
   - 就像之前 Employee对象 描述一个特定员工的属性一样，`Class对象` 会描述一个特定类的属性。
 
@@ -686,9 +687,9 @@ System.out.println("%8.2", x);
 
   - `Class类` 实际上是一个 泛型类。 eg： `Employee.class` 的类型是 `Class<Employee>`
   
-  - 虚拟机为  **每个类型** 管理 **唯一 一个** `Class对象`。所以上一节中使用`==`实现两个类的比较（**言外之意是：判断是否属于同一个类生成的对象**）： `if(e.getClass() == Employee.class)`
+  - 虚拟机为  **每个类型** 管理 **唯一 一个** `Class对象`。所以上一节中使用 `==` 实现两个类的比较（**言外之意是：判断是否属于同一个类生成的对象**）： `if(e.getClass() == Employee.class)` :imp:  :imp:  :imp:  
   
-- 使用 `Class类`对象，构造类的实例。调用`getConstructor` 方法将得到一个`Constructor` 类型对象，然后使用`newInstance` 方法来构造实例
+- 使用 `Class类` 对象，构造类的实例。调用 `getConstructor`  方法将得到一个`Constructor` 类型对象，然后使用`newInstance` 方法来构造实例
 
   ```java
   var className = "java.util.Random";
@@ -703,7 +704,7 @@ System.out.println("%8.2", x);
 
 - 利用反射分析类的能力：反射机制的重要内容 - `检查类结构`
 
-  - `java.lang.reflect` 包中有三个类： `Field`、`Method`、`Constructor ` 分别用于描述 类的字段、方法、和 构造器。带 Declared 修饰的方法包括从超类继承过来的，不带的只是这个类的。
+  - `java.lang.reflect` 包中有三个类： `Field`、`Method`、`Constructor ` 分别用于描述类的字段、方法、和构造器。带 Declared 修饰的方法包括从超类继承过来的，不带的只是这个类的。
     - `Field[] getFields()`
     - `Field[] getDeclaredFields()`
     - `Method[] getMethods()`
@@ -773,9 +774,68 @@ System.out.println("%8.2", x);
     
       - 这里 用 `Object` 而不用 `Object[]` 的原因是：为了使该方法可以扩展 任意类型数组 而不单单是对象数组。
     
-        ```
+        ```java
         int[] a ={1, 2, 3, 4, 5};
         a = (int[]) goodCopyof(a.10);
         ```
     
-        
+  
+- 可以利用 `反射机制` 调用 `任意的方法` 和 `构造器`
+  
+  - d调用`任意方法`： 1.获得  `Method 对象 ` 2. 调用 `invoke方法`
+    
+  - 例如 ： 可以利用 `Method类` 中的 `invoke方法` ，调用包装在当前 Method对象 中的方法
+  
+    ```java
+    // Object invoke(Object obj, Object...args) 
+    // 第一个 参数 是隐式参数（static 为 null）， 其余对象提供显式参数
+    String n = (String) m1.invoke(harry)
+    ```
+  
+  - 如何得到 `Method对象` 方法, 有下面两种。不过有若干种 **同名方法**，所以还必须提供方法的参数类型
+  
+    - 调用 `getDeclaredMethods方法`
+  
+    - 调用 `Class类` 的 `getMethod`       `
+  
+      ```java
+      // Method getMethod(String name, Class... parameterTypes)
+      // 说明了如何获得方法指针
+      Method m1 = Employee.class.getMethod("getname");
+      Method m2 = Employee.class.getMethod("raiseSalary", double.class);
+      ```
+  
+  - 调用 `构造器` : 1. 获取  `Constructor对象` 2. 调用方法 `newInstance方法`
+  
+    - 将 参数类型 提供给  `Class.getConstructor方法` 
+  
+    - 把 参数值 提供给  `Constructor.newInstance方法`
+  
+      ```java
+      Class cl = Random.class;
+      Constructor cons = cl.getConstructor(long.class);
+      Object obj = cons.newInstance(42L);
+      ```
+  
+  - **使用反射获得的方法指针比直接调用慢很多**（因为来回强制类型转换需要花费大量时间）
+  
+- 反射总结：
+
+  - 什么是 Class类
+  - 分析 类的结构： 字段、方法、构造器
+  - 在运行时 分析对象：主要是对象的字段
+  - 写泛型数组代码
+  - 调用 任意方法 和 构造器 ：方法指针
+
+## 5.8 继承的设计技巧
+
+- 将公共操作和字段放在超类中
+- 不要使用受保护字段
+- 使用 继承实现“is- a” 关系时，避免滥用
+- 除非所有继承方法都有意义，否则不要使用继承
+- 在覆盖方法时，不要改变预期行为
+- 使用多态，而不要使用类型信息
+- 不要滥用反射
+
+# 第六章 接口、lambda表达式与内部类
+
