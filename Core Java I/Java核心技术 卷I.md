@@ -594,7 +594,7 @@ System.out.println("%8.2", x);
 	
 	---
 > 小技巧  : 既可以灵活扩展数组，又可以方便访问数组元素
-	
+
 	>	```java
 	>	var list = new ArrayList<X>();
 	>	while(...){
@@ -838,4 +838,61 @@ System.out.println("%8.2", x);
 - 不要滥用反射
 
 # 第六章 接口、lambda表达式与内部类
+
+## 6.1 接口
+
+- `接口` ： 他不是类，是对希望符合这个接口的类的一组需求
+
+- `接口 ` 中 **所有方法** 都自动是 `public方法`。因此，在接口中声明方法时，不必提供关键字 `public`
+
+- `接口` 可以定义 常量， 但是 **绝不会有** **实例字段**。可以将其看成没有实例字段的抽象类。但两者还有着一定的区别。:imp:  :imp:  :imp:  
+
+- 一个具体例子：`Arrays类` 中 的 `sort()` 方法承诺可以对对象数组进行排序，但必须满足的条件是：对象所属类必须实现 `Comparable接口`
+
+  ```java
+  public interface Comparable
+  {
+  	int compareTo(Object other);
+  }
+  // java 5 开始
+  public interface Comparable<T>
+  {
+  	int compareTo(T other);
+  }
+  ```
+
+  - 假设希望使用 `Arrays类` 的 `sort方法` 对 `Employee对象数组` 进行排序, `Employee类` 就必须实现 `Comparable接口`
+
+    ```java
+    // 将类声明为实现给定接口
+    class Employee implements Comparable
+    {
+        // 对接口中的所有方法提供定义
+        public int compareTo(Object otherObject)
+        {
+        	Employee other = (Employee) otherObject;
+            return Double.compare(salary, other.salary);
+        }
+    }
+    // java 5 开始
+    class Employee implements Comparable<Employee>
+    {
+        public int compareTo(Employee other)
+        {
+            return Double.compare(salary, other.salary);
+        }
+    }
+    ```
+
+  - `x.compareTo(y) ` : x 小于 y，返回负数；x 等于 y，返回0； x 大于 y，返回正数。
+
+  - `Comparable接口  ` 的文档建议：`compareTo方法` 应当与 `equals方法` 兼容，也即是说当 `x.equals(y)` 时， `x.compareTo(y)` 就应该等于 0。
+
+  - 如果比较的两个对象 一个是父类 eg：Employee，一个是子类 eg： Manager，`x.compareTo(y) ` 不会异常， `y.compareTo(x) ` 会出现异常 `ClassCastException`。（与 `equals方法` 相似）两种解决方法:imp:  :imp:  :imp:  
+
+    - 不同子类中比较的含义不同时，就应该将属于不同类的对象之间的比较视为违法，在开始 `compareTo方法  ` 时，进行如下检查： `if(getClass() != other.getClass()) throw new ClassCastException()`
+
+    - 如果存在一个比较子类对象的通用方法，那么可以在超类中提供一个 `compareTo方法  ` ，并将这个方法声明为 `final`
+
+      
 
