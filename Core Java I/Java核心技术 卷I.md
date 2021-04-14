@@ -595,18 +595,18 @@ System.out.println("%8.2", x);
 	---
 > 小技巧  : 既可以灵活扩展数组，又可以方便访问数组元素
 
-	>	```java
-	>	var list = new ArrayList<X>();
-	>	while(...){
-	>		x = ...;
-	>		list.add(x);
-	>	}
-	>	
-	>	var a = new X[list.size()]
-	>	list.toArray(a)
-	>```
-	
-	---
+>	```java
+>	var list = new ArrayList<X>();
+>	while(...){
+>		x = ...;
+>		list.add(x);
+>	}
+>	
+>	var a = new X[list.size()]
+>	list.toArray(a)
+>```
+
+---
 
 ## 5.4 对象包装器 与 自动装箱
 
@@ -916,5 +916,38 @@ System.out.println("%8.2", x);
     - `接口冲突`： 如果一个接口提供一个默认方法，因一个接口提供了一个同名且参数类型相同（不能是否为默认方法）的方法，必须覆盖这个方法来解决冲突
     - 如果两个接口都没有给共享方法提供默认实现，这里就不存在冲突
 
-    
 
+- `回调` ： 是一种常见的程序设计模式。在这种模式中，可以指定某个特定事件发生时应该采取的动作。
+
+- `Sting.compar()方法` 可以按照字典顺序比较字符串，可是当我们需要按照长度去比较字符串时，就需要实现 `Arrays.sort()` 的第二个版本：
+
+  ```java
+  public interface Comparator<T>{
+      int comapre(T first, T second);
+  }
+  ```
+
+  ​    按照长度实现可以定义下面这个类
+
+  ```java
+  class LengthComparator implements Comparator<String>
+  {
+  	public int compare(String first, String second)
+  	{
+  		return first.length() - second.length();
+  	}
+  }
+  // 具体完成比较时，需要建立一个实例
+  var comp = new LengthComparator()
+  // 这个比较方法要在比较器对象上调用，而不是在字符串本身上调用
+  if(comp.compare(words[i], words[j]) > 0) ...
+  ```
+
+  ​	对数组排序时，需要传为 `Arrays.sort() `入一个 `LengthComparator对象`
+
+  ```java
+  String friends = {"Peter", "Paul","Mary"};
+  Arrays.sort(friends, new LengthComparator());
+  ```
+
+  
