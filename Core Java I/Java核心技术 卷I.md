@@ -953,20 +953,65 @@ System.out.println("%8.2", x);
 - `Cloneable` 接口:
 
 
-  - `object类` 的 `clone`，他对这个对象一无所知, 所以这能逐个字段进行拷贝。如果是基本类型就没有问题，但是如果这个对象字段中包含对象引用，这样一来拷贝下来仍然会出现局部共享。所以出现下面这两个概念：
+  - `object类` 的 `clone`，他对这个对象一无所知, 所以这能逐个字段进行拷贝。如果是基本类型就没有问题，但是如果这个对象字段中包含对象引用（子对象是不可变不影响），这样一来拷贝下来仍然会出现局部共享。所以出现下面这两个概念：
 
 
-    - `“浅拷贝”`: (Object类中clone方法的默认操作)：并没有clone 对象中引用的其他对象
-
+    - `“浅拷贝”`: (Object类中clone方法的默认操作)：并没有clone 对象中字段引用的其他对象
     - `“深拷贝”`: 同时克隆所有子对象 
 
-  - 对于每一个类需要确定：
+    - 对于每一个类需要确定：
+      - 默认的 Object类 中的clone方法是否满足需求；
+      - 是否可以在可变的子对象上调用 clone方法 来弥补默认的clone 方法，如果需要：
 
+        - 实现 `Cloneable` 接口
+        - 重新定义 clone 方法，并指定 `public` 访问修饰符
 
-    - 默认的 Object类 中的clone方法是否满足需求；
-    - 是否可以在可变的子对象上调用 clone方法 来弥补默认的clone 方法，如果需要：
+- `Object类` 中的 `clone方法` 声明为 `protected`, 所以不能在自己写的代码里调用 `anObject.clone`， 因为你的类不是 该对象的子类，且你可能和定义clone方法的类不在一个包下，所以在重新定义clone方法时，要指定为 public，以便所有方法都可以克隆对象
 
-      - 实现`Cloneable` 接口
-      - 重新定义 clone 方法，并指定public访问修饰符
+- `Cloneable接口` 没有 `clone方法` ，这个方法是从 `Object类` 继承的。它是Java中少数的 **标记接口** ，**标记接口** 不含任何方法，就是在类检查中允许使用 `instanceof`
 
-  - 
+- 即使默认 `clone方法`  实现能够满足要求，但还是需要实现 `Cloneable接口` , 将 clone 重新定义为 `public`, 在调用`super.clone()`。
+
+    ```java
+    class Employee implements Cloneable
+    {
+        // public access, change return type
+        public Employee clone() throws CloneNotSupportedException
+        {
+            return (Employee)super.clone();
+        }
+        ...
+    }
+    ```
+
+- “深拷贝” 需要克隆对象中可变的实例字段
+
+    ```java
+    class Employee implements Cloneable
+    {
+        ...
+        // 在一个对象上调用 clone 方法，若没有实现Cloneable接口， 会抛出 
+        //CloneNotSupportedException异常
+        public Employee clone() throws CloneNotSupportedException
+        {
+            // call Object.clone()
+            Employee cloned = (Employee) super.clone();
+            
+            // clone mutable fields
+            cloned.hireDay = (Date) hireDay.clone();
+            
+            return cloned;
+        }
+    }
+    ```
+
+- 所有的数组类型都有一个 **公共的 ** `clone方法`，而不是 **受保护的**。可以用这个方法 建立一个新数组，包含原数组的所有副本。
+
+  ```java
+  int[] luckNumbers = {2, 3, 5, 7, 11, 13};
+  int[] cloned = luckNumbers.clone();
+  cloned[5] = 12 // doesn't change luckNumbers[5]
+  ```
+
+## 6.2 lambda 表达式
+
