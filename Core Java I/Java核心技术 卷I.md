@@ -898,7 +898,7 @@ System.out.println("%8.2", x);
 
     - 如果存在一个比较子类对象的通用方法，那么可以在超类中提供一个 `compareTo方法  ` ，并将这个方法声明为 `final`
   
-- ~~接口不是 类，不能用 new 运算符实例化一个接口，虽然不能构造接口对象 ，但是可以声明接口的引用变量。每个类只能由一个超类，但是可以**实现**多个接口~~
+- ~~接口不是 类，不能用 new 运算符实例化一个接口，虽然不能构造接口对象 ，但是可以声明接口的引用变量。每个类只能有一个超类，但是可以**实现**多个接口~~
 
 - 如同使用 `instanceof` 检查一个对象是否属于某个特定类一样，也可以使用 `instanceof` 检查一个对象是否实现了某个特定的接口:  `if(anObject instanceof Comparable){...}`
 
@@ -955,14 +955,13 @@ System.out.println("%8.2", x);
 
   - `object类` 的 `clone`，他对这个对象一无所知, 所以这能逐个字段进行拷贝。如果是基本类型就没有问题，但是如果这个对象字段中包含对象引用（子对象是不可变不影响），这样一来拷贝下来仍然会出现局部共享。所以出现下面这两个概念：
 
-
     - `“浅拷贝”`: (Object类中clone方法的默认操作)：并没有clone 对象中字段引用的其他对象
     - `“深拷贝”`: 同时克隆所有子对象 
-
+    
     - 对于每一个类需要确定：
       - 默认的 Object类 中的clone方法是否满足需求；
       - 是否可以在可变的子对象上调用 clone方法 来弥补默认的clone 方法，如果需要：
-
+    
         - 实现 `Cloneable` 接口
         - 重新定义 clone 方法，并指定 `public` 访问修饰符
 
@@ -1014,4 +1013,26 @@ System.out.println("%8.2", x);
   ```
 
 ## 6.2 lambda 表达式
+
+- `lambda表达式` ：是一个可传递的代码块
+
+  - 例子
+
+    ```java
+    class LengthComparator implements Comparator<String>
+    {
+    	public int compare(String first, String second)
+    	{
+    		return first.length() - second.length();
+    	}
+    }
+    ...
+    Arrays.sort(friends, new LengthComparator());
+    ```
+
+  - 这个例子的特点：将一个代码块传递给某个对象。这个代码块会在将来某个时间调用
+
+  - 再出现这个与法之前，Java传递一个代码块并不容易，你不能直接传递代码块，因为Java是面向对象语言，你必须构造一个对象，这个对象的类需要有一个方法包含所需要的代码。然后传递一个对象。
+
+  - `lambda表达式`是 Java语言 用来 **支持函数式编程 **的。
 
