@@ -1014,7 +1014,7 @@ System.out.println("%8.2", x);
 
 ## 6.2 lambda 表达式
 
-- `lambda表达式` ：是一个可传递的代码块
+- `lambda表达式` ：是一个 `可传递的代码块`
 
   - 例子
 
@@ -1030,9 +1030,72 @@ System.out.println("%8.2", x);
     Arrays.sort(friends, new LengthComparator());
     ```
 
-  - 这个例子的特点：将一个代码块传递给某个对象。这个代码块会在将来某个时间调用
+  - 这个例子的特点：将一个 **代码块** 传递给某个对象。这个代码块会在将来某个时间调用
 
   - 再出现这个与法之前，Java传递一个代码块并不容易，你不能直接传递代码块，因为Java是面向对象语言，你必须构造一个对象，这个对象的类需要有一个方法包含所需要的代码。然后传递一个对象。
 
   - `lambda表达式`是 Java语言 用来 **支持函数式编程 **的。
+
+-  `lambda表达式` 表达的多样形式： 
+
+  - 参数，箭头（->）以及一个表达式，并包含显式的 return 语句
+
+  	```java
+  	(String first, String second) ->
+  		{
+	    	if(first.length() < second.length()) return -1;
+  	    	else if(first.length() > second.length()) return 1;
+  	    	else return 0;
+  		}
+  	```
+  	
+  - 没有参数也要提供 空括号
+  
+    ```java
+    () -> {for (int i = 100; i >= 0; i--) System.out.println(i);}
+    ```
+  
+  - 如果可以推导出一个Lambda表达式的参数类型，则可以忽略其类型
+  
+    ```java
+    Comparator<String> comp = (first, second) // same as (String first, String second)
+        		-> first.length() - second.length();
+    ```
+  
+  - 如果方法只有一个参数，而且这个参数的类型可以推导出，那么可以省略小括号
+  
+    ```java
+    ActionListener listener = event ->
+        System.out.println("The time is " 
+          + Instant.ofEpochMilli(event.getWhen()));
+    	// instead of (event) -> ... or (ActionEvent event) -> ...
+    ```
+  
+  - 无需定义 `lambda表达式` 的返回类型，返回类型总是会由上下文推导得出。
+  
+    ```java
+    (String first, String second) -> first.length() < second.length())
+    ```
+  
+- **只有一个** 抽象方法 的接口，需要这种接口对象时，可以提供 一个`lambda表达式`，这种接口称为`函数式接口`。这个表达式会转化为接口，例子如下：
+
+  ```java
+  // 第二个参数 需要一个 Comparator实例（是只有一个方法的接口），可以提供一个 lambda表达式
+  Arrays.sort(words, 
+             (first, second) -> first.length() - second.length())
+  ```
+
+- `lambda表达式` 可以转化为 接口 。eg:
+
+  ```java
+  var timer = new Timer(100, event ->
+      {
+          System.out.println("At the tone, the time is" 
+            + Instant.ofEpochMilli(event.getwhen()));
+          Toolkit.getDefaultToolkit().beep();
+      });
+  ```
+
+- 最好把 `lambda表达式` 看做是一个函数，而不是一个对象，另外要接受  `lambda表达式` 可以传递到函数式接口
+- 实际上，在 Java中，对 `lambda表达式` 所能做的 **也只是** 转化为 `函数式接口`​。**​没有为​Java​语言​增加​函数​类型。**:imp:  :imp:  :imp:  
 
