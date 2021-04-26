@@ -1099,3 +1099,25 @@ System.out.println("%8.2", x);
 - 最好把 `lambda表达式` 看做是一个函数，而不是一个对象，另外要接受  `lambda表达式` 可以传递到函数式接口
 - 实际上，在 Java中，对 `lambda表达式` 所能做的 **也只是** 转化为 `函数式接口`​。**​没有为​Java​语言​增加​函数​类型。**:imp:  :imp:  :imp:  
 
+- `方法引用 ` : 例如下面的 `System.out::println` 就是一个方法引用，他指示 **编译器** 生成一个 **函数式接口**实例，用给定的方法覆盖实例的抽象方法并调用。 下面例子会生成 ActionListener, 它的  `actionPerformed(ActionEvent event)` 方法会调用 `System.out.println(e) `。
+
+  ```java
+  // 假设你希望只要出现一个定时器时间就打印这个事件对象
+  var timer = new Timer(1000, event -> System.out.println(event));
+  // 直接把 println方法 传递到 Timer构造器
+  var timer = new Timer(1000, System.out::println);
+  // 假设你想对字符串进行排序，而不考虑字母大小写。可以传递以下方法表达式
+  Arrays.sort(strings, String::compareToIgnoreCase);
+  ```
+
+- `方法引用` 与 `lambda表达式` 类似，两者都不是对象。在为 `函数式接口` 的变量赋值时会生成一个对象（即方法引用不能独立存在，总是会转化为函数式接口的实例）。注意： 只有当 `lambda表达式` 的体只调用一个方法而不做其他操作时，才能把 `lambda表达式` 重写为`方法引用`（阐述了两者的区别）:imp:  :imp:  :imp:  
+
+- `方法引用`  主要有三种情况，要用 `::运算符` 分割方法名与类名或对象
+  - object::instanceMethod
+    - 等价于 `lambda表达式`   eg: `System.out::println` 等价于 `x -> System.out.println(x)`
+  - Class::instanceMethod
+    - 第一个参数会成为方法的隐式参数 eg:`String::compareToIgnoreCase` 等价于 `(x, y) -> x.compareToIgnoreCase(y)`
+  - Class::staticMethod
+    - 所有参数都会传递到静态方法中 eg：`Math.pow` 等价于 (x, y) -> Math.pow(x, y)
+
+- 方法引用可以使用 this指参数，super也是合法的  eg: `this::equals` 等同于 `x -> this.equals(x)`
