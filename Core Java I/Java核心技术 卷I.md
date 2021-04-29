@@ -1097,9 +1097,10 @@ System.out.println("%8.2", x);
   ```
 
 - 最好把 `lambda表达式` 看做是一个函数，而不是一个对象，另外要接受  `lambda表达式` 可以传递到函数式接口
-- 实际上，在 Java中，对 `lambda表达式` 所能做的 **也只是** 转化为 `函数式接口`​。**​没有为​Java​语言​增加​函数​类型。**:imp:  :imp:  :imp:  
 
-- `方法引用 ` : 例如下面的 `System.out::println` 就是一个方法引用，他指示 **编译器** 生成一个 **函数式接口**实例，用给定的方法覆盖实例的抽象方法并调用。 下面例子会生成 ActionListener, 它的  `actionPerformed(ActionEvent event)` 方法会调用 `System.out.println(e) `。
+- 实际上，在 Java中，对 `lambda表达式` 所能做的 **也只是** 转化为 `函数式接口`​。**​没有为 ​Java​语言 ​增加​函数​类型。**:imp:  :imp:  :imp:  
+
+- `方法引用 ` : 例如下面的 `System.out::println` 就是一个方法引用，他指示 **编译器** 生成一个 **函数式接口**实例，用给定的方法覆盖实例的抽象方法并调用。 下面例子会生成 ActionListener对象, 它的  `actionPerformed(ActionEvent event)` 方法会调用 `System.out.println(e) `。
 
   ```java
   // 假设你希望只要出现一个定时器时间就打印这个事件对象
@@ -1110,14 +1111,116 @@ System.out.println("%8.2", x);
   Arrays.sort(strings, String::compareToIgnoreCase);
   ```
 
-- `方法引用` 与 `lambda表达式` 类似，两者都不是对象。在为 `函数式接口` 的变量赋值时会生成一个对象（即方法引用不能独立存在，总是会转化为函数式接口的实例）。注意： 只有当 `lambda表达式` 的体只调用一个方法而不做其他操作时，才能把 `lambda表达式` 重写为`方法引用`（阐述了两者的区别）:imp:  :imp:  :imp:  
+- `方法引用` 与 `lambda表达式` 类似，两者都不是对象。在为 `函数式接口` 的变量赋值时会生成一个对象（即方法引用不能独立存在，总是会转化为函数式接口的实例）。注意： 只有当 `lambda表达式` 的体只调用一个方法而不做其他操作时，才能把 `lambda表达式` 重写为 `方法引用`（阐述了两者的区别）:imp:  :imp:  :imp:  
 
 - `方法引用`  主要有三种情况，要用 `::运算符` 分割方法名与类名或对象
   - object::instanceMethod
     - 等价于 `lambda表达式`   eg: `System.out::println` 等价于 `x -> System.out.println(x)`
   - Class::instanceMethod
-    - 第一个参数会成为方法的隐式参数 eg:`String::compareToIgnoreCase` 等价于 `(x, y) -> x.compareToIgnoreCase(y)`
+    - 第一个参数会成为方法的隐式参数 eg: `String::compareToIgnoreCase` 等价于 `(x, y) -> x.compareToIgnoreCase(y)`
   - Class::staticMethod
     - 所有参数都会传递到静态方法中 eg：`Math.pow` 等价于 (x, y) -> Math.pow(x, y)
 
 - 方法引用可以使用 this指参数，super也是合法的  eg: `this::equals` 等同于 `x -> this.equals(x)`
+
+- `构造器引用` ： 与方法引用类似，只不用方法名为 `new`，eg: `Person::new` 是 person 构造器的一个引用
+
+  ```java
+  ArrayList<String> names = ...;
+  Stream<Person> steam = names.stream.map(Person::new);
+  List<Person> people = stream.collect(Collectors.toList());
+  ```
+
+- 可以用 数组类型 建立`构造器引用`。 eg: `int::new` 是一个构造器引用，他有一个参数：即数组的长度。这个引用等价于 lambda表达式 `x -> new int[x]`
+
+-   `变量作用域` : 希望能够在 `lambda表达式` 中访问外围方法或类中的变量
+
+  ```java
+  public static void repeatMessage(String text, int delay)
+  {
+      ActionListener listener = event ->
+      {
+          System.out,println(text);
+          Toolkit.getDefaultToolkit().beep();
+      };
+      new Timer(delay,listerner).start();
+  }
+  ```
+
+  - text 并不是在这个 `lambda表达式` 中定义的， `lambda表达式` 的代码可能会在 reapeatMessage 调用返回很久后才运行，而那时，这个参数变量 已经不存在了，如何保留呢？
+
+    -   `lambda表达式`  有 3 个部分：
+      - 一个代码块
+      - 参数
+      - **自由变量的值**，这是指非参数而且不在代码中定义的变量 eg： text
+    - 这个  `lambda表达式`  的自由变量是 text。表示  `lambda表达式`  的数据结构必须会存储自由变量的值。我们说它被  `lambda表达式`  **捕获**（captured)  eg：可以把  `lambda表达式`  转换为包含一个方法的对象，这个 **自由变量** 的值就会复制到这个对象的实例变量中。
+
+  - 要确保 捕获的值是明确定义的，这里有一个**重要限制**：在  `lambda表达式`  中，只能引用 **值不会改变** 的变量（原因之一：在  `lambda表达式`  中更改变了，在并发执行多个操作会不安全）
+
+    - 如果这个变量在  `lambda表达式`  外可能改变，这也是 **不合法** 的，
+    - 所 **捕获** 的变量必须是 `事实最终变量`:这个变量在初始化之后就不会在为它赋新值
+
+  -   `lambda表达式` 体与嵌套块 有相同作用域。同样适用命名冲突和遮蔽的有关规则
+
+    - 在  `lambda表达式`  中声明一个局部同名的参数 或 局部变量 是 **不合法** 的。在一个方法中，不能有两个同名局部变量，  `lambda表达式`  也不能有
+
+    	```java
+    	Path first = Path.of("/usr/bin");
+    	// ERROR: Variable first already defined
+    	Comparator<String> comp = 
+    	    (first, second) -> first.length() - second.length();
+	  	```
+  
+- 在  `lambda表达式`  中使用 this关键字，是指创建 这个  `lambda表达式`  的方法的 this参数
+
+  ```java
+  // 表达式 this.toString() 会调用 Application 对象的 toString 方法
+  // 而不是 ActionListener实例的方法
+  Public class Application{
+      public void init(){
+          ActionListener listener = event ->
+          {
+              System.out.println(this.toString());
+              ...
+          }
+          ...
+      }
+  }
+  ```
+
+- 编写 自定义方法 处理  `lambda表达式` 
+
+  - 使用 表达式的 重点： **延迟执行**
+
+  - 之所以希望以后再执行，有很多原因，如：
+
+    - 在一个单独的线程中运行代码
+    - 多次运行代码
+    - 在算法的适当位置运行代码，eg：排序中的比较操作
+    - 发生某种情况时运行代码，eg：点击一个按钮，数据传达
+    - 只在必要时运行代码
+
+  - 例子：假设你想要重复一个动作 n 次，将这个动作和重复次数传递到一个 repeat 方法
+
+    ```java
+    repeat(10, () -> System.out.println("Hello,World!");
+    // 接收 这个 lambda表达式 需要一个函数式接口
+    public static void repeat(int n, Runnable action){
+        for(int i = 0; i< n; i++) action.run();
+    }
+    
+    // 如果我们希望告诉这个动作它出现在 哪一次迭代中，需要选择一个合适的函数式接口
+    // 这个方法有一个int参数，且返回值为 void
+    public interface IntConsumer{
+        void accept(int value);
+    }
+    public static void repeat(int n, IntConsumer action){
+        for(int i = 0; i < n; i++) action.accept(i);
+    }
+    repeat(10, i -> System.out.println("Countdown:" + (9 - i)));
+    ```
+
+- 如果设计你自己的接口，其中只有一个抽象方法，可以用注解 `@FunctionalInterface` 来标记，如果你无意中增加了另一个抽象方法，编译器会产生一个错误消息
+
+# 6.3 内部类
+
