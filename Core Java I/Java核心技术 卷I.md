@@ -1222,5 +1222,71 @@ System.out.println("%8.2", x);
 
 - 如果设计你自己的接口，其中只有一个抽象方法，可以用注解 `@FunctionalInterface` 来标记，如果你无意中增加了另一个抽象方法，编译器会产生一个错误消息
 
-# 6.3 内部类
+## 6.3 内部类
 
+- `内部类` ： 定义在另一个类中的类
+
+- 为什么需要？
+  - 内部类可以对同一个包中的其他类隐藏
+  - 内部类方法可以访问定义这个类的作用域中的数据，包括原本私有属性
+  
+- Java中 内部类 与 C++ 中嵌套类有一定区别
+  - ava 内部类的对象会有一个 **隐式索引** ，指向实例化这个对象的外部类对象
+  - Java 中静态内部类没有这个附加指针，相当于 C++ 中的嵌套类
+  
+- 举个例子
+
+  ```java
+  public class TalkingClock{
+      private int interval;
+      private boolean beep;
+      
+      public TalkingClock(int interval, boolean beep){ ... }
+      public void start(){...}
+      // an inner class
+      
+      public class TimerPrinter implememts ActionListerner{
+          ...
+      }
+  }
+  
+  public class TimerPrinter implememts ActionListerner{
+          public void actionPerformed(ActionEvent event){
+              System.out.println("At the tone, this time is " +        
+                 Instant.ifEpochMilli(event.getwhen));
+              if(beep) Toolkit.getDefaultToolkit().beep();
+          }
+      }
+  ```
+
+  - 一个内部类方法 可以访问自身数据字段， 也可以访问创建它的外围类对象的数据字段
+  - 内部类对象 总有一个 **隐式引用**， 指向创建它的外部类对象，它是不可见的，由编译器负责自动创建
+
+- 内部类有一个外部类的引用（隐式引用），使用外围类引用的正规语法： `OutClass.this`
+
+  - 可以这样改写 TimerPrinter类 的 actionPerformed 方法：
+
+    ```java
+     public void actionPerformed(ActionEvent event){
+                ...
+                if(TalkingClock.this.beep) Toolkit.getDefaultToolkit().beep();
+            }
+    ```
+
+- 编写内部类对象构造器的明确语法： `outerObject.new InnerClass(construction parameters)`
+	- 外围类引用 被设置为 内部类对象 的方法的 this引用， 通常 this限定词 多余
+  	```java
+  	ActionListerner listener = this.new TimerPrinter();
+  	```
+  	
+  - 显示将 外围类引用 设置为其他的对象，因为对于公共内部类，任何 外部类对象 都可以构造 内部类对象
+  
+    ```java
+    var jabberer = new TalkingClock(1000, true);
+    TalkingClock.TimePrinter listener = jabberer.new TimePrinter();
+    ```
+  
+- 外围类作用域之外，引用内部类： `OuterClass.InnerClass`
+
+- 内部类声明的 所有静态字段 **都必须** 是final，并初始化为一个编译时常量
+- Java语法规范限制：内部类不能有 static 方法
