@@ -1143,7 +1143,7 @@ System.out.println("%8.2", x);
           System.out,println(text);
           Toolkit.getDefaultToolkit().beep();
       };
-      new Timer(delay,listerner).start();
+      new Timer(delay,listener).start();
   }
   ```
 
@@ -1230,8 +1230,8 @@ System.out.println("%8.2", x);
   - 内部类可以对同一个包中的其他类隐藏
   - 内部类方法可以访问定义这个类的作用域中的数据，包括原本私有属性
   
-- Java中 内部类 与 C++ 中嵌套类有一定区别
-  - ava 内部类的对象会有一个 **隐式索引** ，指向实例化这个对象的外部类对象
+- Java 中 内部类 与 C++ 中嵌套类有一定区别
+  - Java 内部类的对象会有一个 **隐式索引** ，指向实例化这个对象的外部类对象
   - Java 中静态内部类没有这个附加指针，相当于 C++ 中的嵌套类
   
 - 举个例子
@@ -1245,12 +1245,12 @@ System.out.println("%8.2", x);
       public void start(){...}
       // an inner class
       
-      public class TimerPrinter implememts ActionListerner{
+      public class TimerPrinter implememts ActionListener{
           ...
       }
   }
   
-  public class TimerPrinter implememts ActionListerner{
+  public class TimerPrinter implememts ActionListener{
           public void actionPerformed(ActionEvent event){
               System.out.println("At the tone, this time is " +        
                  Instant.ifEpochMilli(event.getwhen));
@@ -1260,9 +1260,9 @@ System.out.println("%8.2", x);
   ```
 
   - 一个内部类方法 可以访问自身数据字段， 也可以访问创建它的外围类对象的数据字段
-  - 内部类对象 总有一个 **隐式引用**， 指向创建它的外部类对象，它是不可见的，由编译器负责自动创建
+  - 内部类对象 总有一个 **隐式引用**， 指向创建它的外围类对象，它是不可见的，由 编译器 负责自动创建
 
-- 内部类有一个外部类的引用（隐式引用），使用外围类引用的正规语法： `OutClass.this`
+- 内部类有一个外围类的引用（隐式引用），使用外围类引用的正规语法： `OutClass.this`
 
   - 可以这样改写 TimerPrinter类 的 actionPerformed 方法：
 
@@ -1276,7 +1276,7 @@ System.out.println("%8.2", x);
 - 编写内部类对象构造器的明确语法： `outerObject.new InnerClass(construction parameters)`
 	- 外围类引用 被设置为 内部类对象 的方法的 this引用， 通常 this限定词 多余
   	```java
-  	ActionListerner listener = this.new TimerPrinter();
+  	ActionListener listener = this.new TimerPrinter();
   	```
   	
   - 显示将 外围类引用 设置为其他的对象，因为对于公共内部类，任何 外部类对象 都可以构造 内部类对象
@@ -1290,3 +1290,99 @@ System.out.println("%8.2", x);
 
 - 内部类声明的 所有静态字段 **都必须** 是final，并初始化为一个编译时常量
 - Java语法规范限制：内部类不能有 static 方法
+
+- 内部类 是一个 **编译器现象**，与虚拟机无关。编译器会把内部类转化为 常规类文件， 用 $ 符分隔外部类名与内部类名，而虚拟机对此一无所知 eg： `TimePrinter类` 将被转化为成类文件 `TalkingClock$TimePrinter.class` ，内部类会存在 安全风险:imp:  :imp:  :imp:   
+
+- `局部内部类`： 如果内部类只是在外围类中使用 一次，出现这种情况，可以在 **一个方法中局部地 **定义这个类
+
+  ```java
+  public void start(int interval, boolean beep){
+      class TimerPrinter implememts ActionListener{
+          public void actionPerformed(ActionEvent event){
+              System.out.println("At the tone, this time is " +        
+                 Instant.ifEpochMilli(event.getwhen));
+              if(beep) Toolkit.getDefaultToolkit().beep();
+          }
+          var listener = new TimerPrinter();
+          var timer = new Timer(interval, listener);
+          timer.start();
+  }
+  ```
+
+  - 声明 局部内部类 不能有访问说明符
+  - 作用域： 被限定在声明这个局部内部类的块中
+  - 优势： 对 外部世界 完全隐藏，甚至 外围类 中的其他代码也不能访问它
+  - 优点：他们不仅能够访问外部类的字段，还可以访问局部变量（必须是事实最终变量），在编译器底层会为这个局部变量创建相应实例字段，并把局部变量复制到构造器（防止方法结束，局部变量消失）
+
+- `匿名内部类`： 只想创建这个类的一个对象，甚至不想要为类指定名字
+
+  ```java
+  public void start(int interval, boolean beep){
+          var listener = new ActionListener{
+          public void actionPerformed(ActionEvent event){
+              System.out.println("At the tone, this time is " +        
+                 Instant.ifEpochMilli(event.getwhen));
+              if(beep) Toolkit.getDefaultToolkit().beep();
+          };
+          var timer = new Timer(interval, listener);
+          timer.start();
+  }
+  ```
+
+  - 这个语法非常晦涩难懂， 含义：创建一个类的新对象，这个类实现了 ActionListener 接口，需要实现的方法在 actionPerformed  中定义
+  
+- 语法：
+  
+    ```java
+    new SuperType(construction parameters){
+        inner class methods and data
+    }
+    ```
+    
+    - SuperType 是 接口，如果是这样，内部类就要实现这个接口 eg: ActionListener
+    - SuperType 是 类，如果是这样，内部类就要扩展这个类
+    
+    - **匿名内部类不能有构造器**，因为构造器名字必须与类名相同，而匿名内部类没有类名:imp:  :imp:  :imp:   
+    
+    - construction parameters 构造参数 是要传递给超类构造器的变量，如果一个内部类实现一个接口，那就不会有任何构造参数，不过仍然要 提供一个小括号
+    
+      ```java
+      new InterfaceType(){
+          methods and data
+      }
+      ```
+    
+  - 例子: 类构造新对象 和 扩展了那个类的匿名内部类对象 之间的差别
+  
+    ```java
+    // a Person Object
+    var queen = new Person();
+    // an object of an inner class extending Person
+    var count = new Person("Dracula"){...};
+    ```
+  
+    - 如果 构造参数列表 后跟一个开始大括号，就是定义 `匿名内部类`
+  
+  - 尽管不能有构造器，但可以提供一个对象初始化块
+  
+    ```java
+    var count = new Person("Dracula"){
+        {Initialization}
+        ...
+    };
+    ```
+  
+  - Java程序员习惯使用匿名内部类实现 事件监听器 和 其他回调，如今还是使用 `lambda表达式`
+  
+    ```java
+    public void start(int interval, boolean beep){
+            var timer = new Timer(interval, event -> {
+                System.out.println("At the tone, this time is " +        
+                   Instant.ifEpochMilli(event.getwhen));
+                if(beep) Toolkit.getDefaultToolkit().beep();
+            });
+            timer.start();
+    }
+    ```
+  
+    
