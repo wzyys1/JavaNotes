@@ -384,7 +384,6 @@ System.out.println("%8.2", x);
       ```
       set CLASSPATH = c:\classdir:.:c:archives/archive.jar
     ```
-  
 
 ## 4.8 JAR 文件
 
@@ -473,7 +472,6 @@ System.out.println("%8.2", x);
   >
   > 	1. 子类对象可以传给父类引用，但是只能调用父类的方法（如果调用实际类型的方法父类中没有定义会报错）
   > 	2. 如果子类把父类定义的方法覆盖了，虚拟机就会动态绑定，调用子类对应同名方法
-  >
   
   ---
   
@@ -518,26 +516,26 @@ System.out.println("%8.2", x);
     > - 显示参数命名为 `otherObject` 
     > - 检测 `this` 和  `otherObject` 是否相等
   	>	```java
-			if(this == otherObect) return true;
+				if(this == otherObect) return true;
 				```
     > - 检测 `otherObject` 是否为 null，如果为 null，返回 false。
     > 	```java
-    	if(otherObject == null) return false;
+    		if(otherObject == null) return false;
     > 	```
     > - 比较 `this`  与 `otherObject` 类  
     >	```java
-      // 如果 equals 的语义可以在子类中改变，就使用 getClass检测：
-    	if(getClass() != otherObject.getClass()) return false
-	  	// 如果所有子类都有相同的 相等性 语义，可以在父类中 使用 instanceof 检测
+      	// 如果 equals 的语义可以在子类中改变，就使用 getClass检测：
+    		if(getClass() != otherObject.getClass()) return false
+	  		// 如果所有子类都有相同的 相等性 语义，可以在父类中 使用 instanceof 检测
   			if(!(otherObject instanceof ClassName) return false // ClassName子类变量名
   	>	```
     > - 将 `otherObject ` 强制转换为相应类类型变量
     >	```java
-    	ClassName other = （ClassName）otherObject
+    		ClassName other = （ClassName）otherObject
     >	```
     > - 根据相等的概念来比较字段，使用 `==` 来比较 基本类型字段，使用  `Objects.equals`  比较对象字段。 
     > 	```java
-    	return field1 == other.field1
+    		return field1 == other.field1
     			&& Objects.equals(field2, other.field2)
     			&& ...;
     >	```
@@ -601,7 +599,7 @@ System.out.println("%8.2", x);
 >		x = ...;
 >		list.add(x);
 >	}
->	
+>								
 >	var a = new X[list.size()]
 >	list.toArray(a)
 >```
@@ -649,7 +647,6 @@ System.out.println("%8.2", x);
   - `static values()`, 返回一个包含全部枚举值的数组 eg：`Size[] values = Size.values();`
 
   - `ordinal()`： 返回 enum 声明中 枚举常量的位置，从 0 开始计数 eg: `Suze.MEDIUM.ordinal()` 返回 1
-  
 ## 5.7 反射
 
 - `反射` ： 能够分析 类能力 的程序
@@ -778,7 +775,6 @@ System.out.println("%8.2", x);
         int[] a ={1, 2, 3, 4, 5};
         a = (int[]) goodCopyof(a.10);
         ```
-    
   
 - 可以利用 `反射机制` 调用 `任意的方法` 和 `构造器`
   
@@ -1408,16 +1404,135 @@ System.out.println("%8.2", x);
 
 ## 7.1 处理异常
 
-- 如果由于出现错误使得某些操作没有完成， 程序应该：
-  - 返回到一种安全状态，并能够让用户执行其他命令
-  - 允许用户保存所有工作的结果，并以妥善的方式终止程序
-- 异常处理的任务：将控制权从产生错误的地方转移到能够处理这种情况的错误处理器
+- ~~如果由于出现错误使得某些操作没有完成， 程序应该：~~
+  
+  - ~~返回到一种安全状态，并能够让用户执行其他命令~~
+  - ~~允许用户保存所有工作的结果，并以妥善的方式终止程序~~
+  
+- ~~异常处理的任务：将控制权从产生错误的地方转移到能够处理这种情况的错误处理器~~
 
-- 必须考虑到的程序中可能出现的异常：
-  - 用户输入错误
-  - 设备错误
-  - 物理限制
-  - 代码错误
-- 如果某个方法不能够采用正常途径完成它的任务，可以通过另外一个路径退出方法，抛出（throw）一个封装了错误信息的对象，这个方法会立即退出，取而代之，异常处理机制 开始搜索能够处理这种异常状况的 异常处理器
+- ~~必须考虑到的程序中可能出现的异常：~~
+  
+  - ~~用户输入错误~~
+  - ~~设备错误~~
+  - ~~物理限制~~
+  - ~~代码错误~~
+  
+- 如果某个方法不能够采用正常途径完成它的任务，可以通过另外一个路径退出方法，抛出（throw）一个**封装了错误信息的对象**，这个方法会立即退出，取而代之，异常处理机制 开始搜索能够处理这种异常状况的 异常处理器
+
 - 在 Java程序设计语言中，异常对象 都是派生于 `Throwable类` 的一个类实例
-- 
+
+- 异常层次结构简化图
+  ```mermaid
+  graph TD
+      	B["Throwable"]
+      	B-->C[Error]
+      	B-->D(Exception)
+      	D-->E(IOException);
+      	D-->F(Runtime Exception);
+  ```
+
+  - `Error类`：Java 运行时系统的 内部错误 和 资源耗尽错误，你的程序不应该抛出这种异常对象
+  - `RuntimeException类`： 由编程错误导致的异常，
+  - `IOException类`： 由于I/O错误这类问题导致的异常
+  - 派生于 `RuntimeException` 的异常包括以下几个问题：
+    - 错误的强制类型转换
+    - 数组访问越界
+    - 访问null指针
+  - 不是派生于`RuntimeException类` 的异常(其他异常)包括：
+    - 试图超越文件末尾继续读取数据
+    - 试图打开一个不存在的文件
+    - 试图根据给定的字符串查找Class对象，而这个字符串表示的类并不存在
+
+- Java语言规范 将派生于 `Error类` 和 `RuntimeException类` 的所有异常称为 `非检查型异常`，包括 `IOException类` 在内的所有 **其他的异常** 称为 `检查型异常`
+
+  - 编译器将检查你是否为所有的 `检查型异常` 提供了异常处理器
+
+- ~~遇到下面两种情况，要告诉调用这个方法的程序员有可能抛出的异常~~
+  - ~~调用了一个抛出 检查型异常 的方法，eg：`FileInputStream 构造器`~~
+  - ~~检测到一个错误，并且利用 throw 语句抛出一个 检查型异常~~
+
+- 一个方法必须声明所有可能抛出的 `检查型异常`， 而 `非检查型异常` 要么在你的控制之外(Error)，要么是由从一开始就应该避免的 情况所导致的(RuntimeException)。如果你的方法没有声明所有可能发生的 `检查型异常`， **编译器** 就会发出一个错误消息
+
+- 在子类中覆盖了一个超类方法， 子类方法中声明的 `检查型异常` 不能比超类方法中声明的异常更通用(抛出更特定的异常或者不抛出)
+- 如果超类方法没有抛出任何 `检查型异常` ， 子类也不能抛出任何 `检查型异常`
+
+- 如果类中的一个方法声明他会抛出一个异常，而这个异常是某个特定类的实例，那么这个方法抛出的异常可能属于这个类，也可能属于这个类的任意一个子类
+
+- Java中 `throws说明符` 在编译时执行，C++ 在运行时执行
+
+- 抛出一个异常的语法：
+
+  ```java
+  // 以 EOFException 为例
+  
+  // 1.
+  throw new EOFException();
+  // 2. 
+  var e = new EOFException();
+  throw e;
+  
+  // 将上面这些代码放在一起
+  String readData(Scanner in) throws EOFException{
+      ...
+      while(...)
+      {
+          if(!in.hasNext()) // EOF encountered
+          {
+              if(n < len){
+                  throws new EOFException();
+              }
+          }
+          ...
+      }
+      return s;
+  }
+  
+  // 利用 EOFException构造器，更细致描述这个异常
+  String gripe = "Content - length: " + len + ", Received" + n;
+  throw new EOFException(gripe);
+  ```
+
+- ~~已经有异常类可以满足需求，如何抛出~~
+
+  - ~~找到合适的异常类~~
+  - ~~创建这个类的一个对象~~
+  - ~~将对象抛出~~
+
+- 创建异常类：任何标准异常类都无法描述清楚的问题
+
+  - 自定义一个 派生于 `Exception类` 或者 派生于 `Exception类` 的某个子类的类
+
+  - 习惯自定义的这个类包含两个构造器
+
+    - 默认构造器
+    - 包含详细描述信息的构造器（超类 Throwable 的 toString方法 会返回一个字符串，包含这个详细信息）
+
+  - 例子
+
+    ```java
+    class FileFormatException extends IOException{
+        public FileFormatException(){}
+        public FileFormatException(String gripe){
+            super(gripe);
+        }
+    }
+    // 抛出你自定义的异常类型
+    String readData(BufferedReader in) throws EOFException{
+        ...
+        while(...)
+        {
+            if(ch = -1) // EOF encountered
+            {
+                if(n < len){
+                    throws new FileFormatException();
+                }
+            }
+            ...
+        }
+        return s;
+    }
+    ```
+
+## 7.2 捕获异常
+
