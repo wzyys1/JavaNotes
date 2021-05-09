@@ -599,7 +599,7 @@ System.out.println("%8.2", x);
 >		x = ...;
 >		list.add(x);
 >	}
->								
+>														
 >	var a = new X[list.size()]
 >	list.toArray(a)
 >```
@@ -1418,7 +1418,7 @@ System.out.println("%8.2", x);
   - ~~物理限制~~
   - ~~代码错误~~
   
-- 如果某个方法不能够采用正常途径完成它的任务，可以通过另外一个路径退出方法，抛出（throw）一个**封装了错误信息的对象**，这个方法会立即退出，取而代之，异常处理机制 开始搜索能够处理这种异常状况的 异常处理器
+- 如果某个方法不能够采用正常途径完成它的任务，可以通过另外一个路径退出方法，抛出（throw）一个**封装了错误信息的“对象”**，这个方法会立即退出，取而代之，异常处理机制 开始搜索能够处理这种异常状况的 异常处理器
 
 - 在 Java程序设计语言中，异常对象 都是派生于 `Throwable类` 的一个类实例
 
@@ -1433,13 +1433,13 @@ System.out.println("%8.2", x);
   ```
 
   - `Error类`：Java 运行时系统的 内部错误 和 资源耗尽错误，你的程序不应该抛出这种异常对象
-  - `RuntimeException类`： 由编程错误导致的异常，
+  - `RuntimeException类`： 由编程错误导致的异常
   - `IOException类`： 由于I/O错误这类问题导致的异常
   - 派生于 `RuntimeException` 的异常包括以下几个问题：
     - 错误的强制类型转换
     - 数组访问越界
     - 访问null指针
-  - 不是派生于`RuntimeException类` 的异常(其他异常)包括：
+  - 不是派生于`RuntimeException类` 的异常 (其他异常) 包括：
     - 试图超越文件末尾继续读取数据
     - 试图打开一个不存在的文件
     - 试图根据给定的字符串查找Class对象，而这个字符串表示的类并不存在
@@ -1452,10 +1452,10 @@ System.out.println("%8.2", x);
   - ~~调用了一个抛出 检查型异常 的方法，eg：`FileInputStream 构造器`~~
   - ~~检测到一个错误，并且利用 throw 语句抛出一个 检查型异常~~
 
-- 一个方法必须声明所有可能抛出的 `检查型异常`， 而 `非检查型异常` 要么在你的控制之外(Error)，要么是由从一开始就应该避免的 情况所导致的(RuntimeException)。如果你的方法没有声明所有可能发生的 `检查型异常`， **编译器** 就会发出一个错误消息
+- 一个方法必须声明所有可能抛出的 `检查型异常`， 而 `非检查型异常` 要么在你的控制之外(Error)，要么是由从一开始就应该避免的情况所导致的(RuntimeException)。如果你的方法没有声明所有可能发生的 `检查型异常`， **编译器** 就会发出一个错误消息
 
 - 在子类中覆盖了一个超类方法， 子类方法中声明的 `检查型异常` 不能比超类方法中声明的异常更通用(抛出更特定的异常或者不抛出)
-- 如果超类方法没有抛出任何 `检查型异常` ， 子类也不能抛出任何 `检查型异常`
+- 如果超类方法没有抛出任何 `检查型异常` ， 子类也不能抛出任何 `检查型异常`  :imp:  :imp:  :imp:  
 
 - 如果类中的一个方法声明他会抛出一个异常，而这个异常是某个特定类的实例，那么这个方法抛出的异常可能属于这个类，也可能属于这个类的任意一个子类
 
@@ -1535,4 +1535,196 @@ System.out.println("%8.2", x);
     ```
 
 ## 7.2 捕获异常
+
+- 如果发现异常，没有捕获，程序会终止，并在控制台上打印一个消息： 这个异常的类型 + 一个 **堆栈轨迹**
+
+-  想要捕获一个异常，需要设置 `try/catch语句块`
+
+  - 最简单的 try 语句块
+
+    ```java
+    try{
+    	code
+        more code 
+        more code
+    }catch (ExceptionType e){
+        handler for this type
+    }
+    ```
+
+  - 如果 try 块中的任何代码抛出 catch子句 中 指定的一个异常类，那么
+
+    - 程序将跳过 try语句块中的其余代码
+    - 程序将执行 catch子句中的处理器代码
+  - try块没抛出任何异常，会跳过catch子句
+  - 抛出了catch子句中没有声明的一个异常类型，方法会立即退出
+
+- 一般情况，调用了一个抛出检查型异常的方法，可以继续抛出去，也可以捕获，但是也有特例：你编写的一个 **覆盖** 超类的方法，如果这个超类没有抛出异常，你就 **必须** 捕获你的方法代码中出现的每一个检查型异常。**不允许出现子类的 throws说明符 中出现超类方法未列出的异常**   :imp:  :imp:  :imp:  
+
+- `try语句块`： 中可以捕获多个异常类型，并对不同类型的异常做出不同的处理
+
+  ```java
+  // 例子
+  try{
+  	code that might throw exceptions 
+  }catch(FileNotFoundException e)
+  {
+      emergency action for missing files
+  }catch(UnknownHostException e)
+  {
+      emergency action for unknown hosts
+  }catch(IOException e)
+  {
+      emergency action for all other I/O problems
+  }
+  ```
+
+- 可以使用 `e.getMessage()` , 获得详细的错误消息(如果有)
+
+- 得到异常对象的实际类型： `e.getClass().getName()`
+
+- 同一个 catch子句 可以捕获多个异常   Java7 后
+
+  ```java
+  // 假如对应缺少文件 和 未知主机异常 的 动作是一样的
+  try{
+  	code that might throw exceptions 
+  }catch(FileNotFoundException | UnknownHostException e)
+  {
+      emergency action for missing files and unknown hosts
+  }
+  ```
+
+  - 这种语法限制：捕获类型彼此之间不存在 子类关系
+  - 这种同时捕获多个异常，声明的 异常变量对象 是 final 类型的，不能赋不同的值
+
+- 再次抛出异常与异常链： 通常希望改变 异常的类型 时，可以在 catch子句 中抛出一个异常
+
+  ```java
+  // 执行一个 servlet 代码，可能不想知道发生错误的细节，但希望明确地知道 servlet 是否有问题
+  try{
+  	access the database
+  }catch(SQLException e)
+  {
+      // 构造 ServeletException 时，提供了异常的消息文本
+      throw new ServeletException("database error");
+  }
+  
+  // 一个更好的处理方法：把原始异常设置为 新异常的原因（包装技术）
+  try{
+  	access the database
+  }catch(SQLException original)
+  {
+      var e = new ServeletException("database error");
+      e.initCause(original);
+      throw e;
+  }
+  // 捕获到异常以后，使用下面语句获取原始异常(估摸 Cause 是个新定义的字段)
+  Throwable original = caughtException.getCause();
+  // 有时只是记录，再重新抛出
+  try{
+  	access the database
+  }catch(Exception e)
+  {
+      logger.log(level, message, e);
+      throw e;
+  }
+  ```
+
+- 一个方法发生一个 检查性异常，但这个方法不允许抛出检查型异常，那 **包装技术** 很好用，捕获检查型异常，并将其包装成一个运行时异常
+
+- `finally子句`： 不管是否有异常被执行， finally子句中的代码都会执行（经常放，清理 终止方法获得的本地资源的代码）
+
+  ```java
+  var in = new FileInputStream(...);
+  try{
+      // 1
+      code that might throw exceptions
+      // 2
+  }catch(IOException e){
+      // 3
+      show error message
+      // 4
+  }finally{
+      // 5
+      in.close();
+  }
+  	// 6
+  
+  // 代码抛出异常，catch子句 抛出异常，异常将抛回这个方法的调用者，执行顺序只是：1、3、5
+  // 代码抛出异常，没有任何 catch子句 捕获这个异常，执行try中语句直到抛出异常，
+  // finally子句中语句，并将异常抛回给方法的调 执行顺序只是：1、5
+  ```
+  - try 语句 可以只有 finally子句，而没有catch子句
+
+- try-finally还可以嵌套在 try-catch 中
+
+  ```java
+  InputStream in = ...;
+  // 内层职责：关闭输入流
+  // 外层职责：确保报告出现的错误
+  // 优势：还会报告 finally子句中出现的错误
+  try{
+      try{
+          code that might throw exceptions
+      }finally{
+          in.close();
+      }
+  }catch(IOException e){
+      show error message
+  }
+  ```
+
+- `finally子句` 的体 要 **用于清理资源**，不要把改变控制流语句(return，throw，break， continue)放在 `finally子句` 中  :imp:  :imp:  :imp:  
+
+- `try-with-Resources子句 `： java7 开始
+
+  - 假设 **资源属于实现**  `AutoCloseable接口` 的类，`AutoCloseable接口` 有一个方法： `void close throws Exception`， `Closeable接口`是它的子接口，抛出的是 `IOException`
+
+  - try-with-Resources子句 (带资源的try语句) 的最简形式：
+
+    ```java
+    try(Resource res = ...)
+    {
+        work with res
+    }
+    ```
+
+    - try块退出时，会自动调用 `res.close()`
+
+  - 例子：
+
+    ```java
+    // 这个块正常退出时，或者存在一个异常时，都会调用 in.close() 方法，就好像使用了 finally块 一样
+    try(var in = new Scanner(
+        new FileInputStream("/usr/share/dict/words"), StandardCharsets.UTF_8)
+    {
+        while(in.hasNext()) 
+            System.out.println(in.next());
+    }
+    
+    // 还可以指定多个资源
+    try(var in = new Scanner(
+        new FileInputStream("/usr/share/dict/words"), StandardCharsets.UTF_8;
+        var out = new PrintWriter("out.txt", StandardCharsets.UTF_8))
+    {
+        while(in.hasNext()) 
+            System.out.println(in.next());
+    }    
+    // 不论 这个块 如何退出， in 和 out 都会自动关闭
+    ```
+    
+  
+- Java9 中可以在  try首部 中提供之前声明的 事实最终变量
+
+  ```java
+  public static void printAll(Sataring[] lines, PrintWriter out){
+      try(out){ //effectively final variable
+          for(String line : lines)
+              out,println(line);
+      } // auto out.close called here
+  }
+  ```
+
+- **只要需要关闭资源，就要尽可能使用** `try-with-Resources语句`， `try-with-Resources语句` 自身也可以有 catch子句，甚至还可以有 finally子句。这些 子句 会在关闭资源之后执行
 
