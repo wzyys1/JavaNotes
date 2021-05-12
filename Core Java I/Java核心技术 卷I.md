@@ -599,7 +599,7 @@ System.out.println("%8.2", x);
 >		x = ...;
 >		list.add(x);
 >	}
->														
+>															
 >	var a = new X[list.size()]
 >	list.toArray(a)
 >```
@@ -1633,7 +1633,7 @@ System.out.println("%8.2", x);
 
 - 一个方法发生一个 检查性异常，但这个方法不允许抛出检查型异常，那 **包装技术** 很好用，捕获检查型异常，并将其包装成一个运行时异常
 
-- `finally子句`： 不管是否有异常被执行， finally子句中的代码都会执行（经常放，清理 终止方法获得的本地资源的代码）
+- `finally子句`： **不管是否有异常被捕获， finally子句中的代码都会执行**（经常放，清理 终止方法获得的本地资源的代码）
 
   ```java
   var in = new FileInputStream(...);
@@ -1652,8 +1652,9 @@ System.out.println("%8.2", x);
   	// 6
   
   // 代码抛出异常，catch子句 抛出异常，异常将抛回这个方法的调用者，执行顺序只是：1、3、5
-  // 代码抛出异常，没有任何 catch子句 捕获这个异常，执行try中语句直到抛出异常，
-  // finally子句中语句，并将异常抛回给方法的调 执行顺序只是：1、5
+  
+  // 代码抛出异常，没有任何 catch子句 捕获这个异常，执行try中语句直到抛出异常，跳过剩余代码，
+  // 然后执行finally子句中语句，并将异常抛回给方法的调用者 执行顺序只是：1、5
   ```
   - try 语句 可以只有 finally子句，而没有catch子句
 
@@ -1713,12 +1714,11 @@ System.out.println("%8.2", x);
     }    
     // 不论 这个块 如何退出， in 和 out 都会自动关闭
     ```
-    
   
 - Java9 中可以在  try首部 中提供之前声明的 事实最终变量
 
   ```java
-  public static void printAll(Sataring[] lines, PrintWriter out){
+  public static void printAll(String[] lines, PrintWriter out){
       try(out){ //effectively final variable
           for(String line : lines)
               out,println(line);
@@ -1727,4 +1727,7 @@ System.out.println("%8.2", x);
   ```
 
 - **只要需要关闭资源，就要尽可能使用** `try-with-Resources语句`， `try-with-Resources语句` 自身也可以有 catch子句，甚至还可以有 finally子句。这些 子句 会在关闭资源之后执行
+
+- `堆栈轨迹`: 程序执行过程中 某个特定点上， **所有挂起方法调用** 的一个列表
+  - 可以调用 `Throwable类` 的 `printStackTrace 方法` 访问堆栈轨迹的文本描述信息
 
