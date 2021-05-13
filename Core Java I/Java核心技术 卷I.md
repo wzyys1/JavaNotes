@@ -599,7 +599,7 @@ System.out.println("%8.2", x);
 >		x = ...;
 >		list.add(x);
 >	}
->															
+>																				
 >	var a = new X[list.size()]
 >	list.toArray(a)
 >```
@@ -1730,4 +1730,58 @@ System.out.println("%8.2", x);
 
 - `堆栈轨迹`: 程序执行过程中 某个特定点上， **所有挂起方法调用** 的一个列表
   - 可以调用 `Throwable类` 的 `printStackTrace 方法` 访问堆栈轨迹的文本描述信息
+
+ ## 7.3 使用异常的技巧
+
+- 异常处理不能代替简单的测试
+  - 基本原则：只在异常情况下使用异常
+- 不要过分的细化异常： 不要每一句一个 try
+- 充分利用异常层次结构
+  - 不要只抛出 `RuntimeException` 异常，应寻找一个 合适的子类，或者创建自己的异常类
+  - 不要只捕获 `Throwable` 异常
+  - 如果能够将有一种异常 转化为另一种更加适合的异常，那么不要犹豫
+
+- 不要压制异常，例如这样： `try{...}catch(Exception e){}`
+- 在检测错误时，苛刻比放任更好
+- 不要羞于传递异常
+
+## 7.4 使用断言
+
+- `断言机制`： 允许在 **测试期间** 向代码中插入一些检查， 而在产生代码中会自动 删除这些检查
+
+- 引入关键字 `assert` ，两种语法形式：两种语句都会计算条件，如果为 false 就会抛出 `AssertionError` 异常
+
+  - `assert condition;`
+  - `assert condition:expression; `
+    - 表达式(expression)：将传入 `AssertionError` 对象的构造器，并转换成一个消息字符串，该部分唯一目的：产生一个消息字符串，并不存储具体的消息表达值
+
+  ```java
+  // 想断言 x 是一个 非负数
+  assert x >= 0;
+  // 将 x 的实际值 传递给 AssertionError对象,以便以后显示
+  assert x >= 0: x;
+  ```
+
+- **默认 断言 是禁用的**， 可以在运行程序时 用  `-enableassertions` 或 `-ea` 选项启用 eg： `java -enableassertions MyApp`
+
+- 启用 或者 禁用 断言 是 `类加载器` 的功能
+
+  - 禁用断言，类加载器会去除断言代码， 因此，**不会** 降低程序运行速度 :imp:  :imp:  :imp:  
+  - 可以在 某个类 或者 整个包中 启用断言 eg:  `java -ea:MyClass -ea:com.mycompany.mylib MyApp`
+  - 可以用选项 `-disableassertions` 或 `-da` 在某个特定类 和 包中禁用断言 eg: `java -ea:... -da:Myclass MyApp`
+  - 启用和禁用所有断言的 `-ea` 和 `-da`  开关不能应用到那些没有 类加载器 的 “系统类”上，对这些类，要用`-enablessystemassertions/-esa` 开关启用断言
+  - 可以通过 编程控制 类加载器(java.lang.ClassLoader) 的状态
+
+- Java语言中，给出了3种 处理系统错误的机制：
+  - 抛出一个异常
+  - 日志
+  - 使用断言
+- 什么时候选择 使用 `断言` ？
+  - 断言是致命的、不可恢复的错误
+  - 断言是 只在开发 和 测试阶段打开
+  - 断言只应该用于在 测试阶段 确定 程序内部错误 的位置
+
+- `断言` 是一种 **测试** 和  **调试** 阶段 使用的 战术性工具，`日志` 是在 **程序整个生命周期** 都可以使用的 战略性工具
+
+## 7.5 日志
 
