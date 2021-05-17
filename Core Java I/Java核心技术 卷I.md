@@ -599,7 +599,7 @@ System.out.println("%8.2", x);
 >		x = ...;
 >		list.add(x);
 >	}
->																				
+>																								
 >	var a = new X[list.size()]
 >	list.toArray(a)
 >```
@@ -1784,4 +1784,113 @@ System.out.println("%8.2", x);
 - `断言` 是一种 **测试** 和  **调试** 阶段 使用的 战术性工具，`日志` 是在 **程序整个生命周期** 都可以使用的 战略性工具
 
 ## 7.5 日志
+
+- 基本日志：要生产简单 日志记录， 可以使用 `全局日志记录器  `  (global logger) 并调用 `info方法`
+
+  ```java
+  Logger.getGlobal().info("File->Open menu item selected");
+  // 默认情况下，会如下打印这个记录
+  May 10, 2013 10:12:15 PM LoggingImageViewer fileOpen
+  INFO: File->Open menu item selected
+      
+  // 在适当地方（如 main 前）调用 下方法，会取消所有日志
+  Logger.getGlobal().setLevel(Level.OFF);
+  ```
+
+- 行业级日志：在一个专业应用程序中，你肯定不想将所有的日志都记录到一个 `全局日志记录器 `  中，可以定义自己的日志记录器
+
+  - 调用 `getLogger` 方法创建 或 获取 日志记录器
+
+    ```java
+    // 使用 静态变量 存储日志记录器的 引用， 为了防止未被任何变量引用的 日志记录器 被垃圾回收
+    private static final Logger mylogger = Logger.getLogger("com.mycompany.mayapp");
+    ```
+
+
+- `日志记录器名` 与 `包名`
+
+  - 两者都具有 层次结构，但日志记录器层次更强
+  - 包 与 父包之间没有语义关系，日志记录器的父与子 之间将共享某些属性 eg： 对一个日志记录器设置级别，子日志记录器也会继承这个级别
+
+- 日志记录器的级别： 高 --> 低
+
+  - SEVERE
+  - WARNING
+  -  INFO
+  - CONFIG
+  - FINE
+  - FINER
+  - FINEST
+
+- 默认情况下，日志记录器只记录 前 3 个级别，可以设置不同级别 eg: 
+
+  ```java
+  // FINE以及所有更高级别日志会被记录
+  logger.setLevel(Level.FINE);
+  ```
+
+- 开启所有级别日志记录 ： `Level.ALL` ,关闭所有级别日志记录：`Level.OFF`
+
+- 所有级别都有 日志记录方法
+
+  ```java
+  logger.warning(message);
+  logger.fine(message);
+  ```
+
+- 日志记录 还可以 使用 `log方法` 并指定级别
+
+  ```java
+  // 记录又给定级别、消息 的日志记录 可包含对象 或者 可抛出对象
+  logger.log(Level.FINE, message);
+  ```
+
+-  默认的日志记录将显示：根据 调用堆栈 得出的 类名和方法名（包含日志调用）
+
+- 可以使用 `logp方法` 获取调用类和方法的确切位置
+
+  ```java
+  // 记录又给定级别、准确调用者、消息 的日志记录 可包含对象 或者 可抛出对象
+  void logp(Level l, String className, String methodName, String message)
+  ```
+  
+- 一些用来跟踪执行流的便利方法
+
+  ```java
+  // 记录一个 描述 进入/退出 的方法(有给定参数和返回值) 的日志记录
+  void entering(String className, String methodName)    
+  void entering(String className, String methodName, Object param)
+  void entering(String className, String methodName, Object[] params)
+  void exiting(String className, String methodName)
+  void exiting(String className, String methodName, Object result)    
+  
+  // 以下例子 会生成 FINER级别， 以 字符串 ENTRY 和 RETURN 开头的日志记录
+  int read(String file, String pattern){
+      logger.entering("com.mycompany.mylib.Reader", "read", new Object[]{ file, pattern});
+      ...
+      logger.exiting("com.mycompany.mylib.Reader", "read", count);
+      return count;
+  }
+  ```
+
+- 使用以下两个方法，在日志记录中包含异常描述。这是日志记录常见的用途
+
+  ```java
+  void throwing(String className, String methodName, Throwable t)
+  void log(Level l, String message, Throwable t)
+  // throwing 调用 可以记录一条 FINER级别日志记录 和一条以 THROW 开头的消息
+  if(...){
+      var e = new IOException("...");
+      logger.throwing("com.mycompany.mylib.Reader", "read", e);
+      throw e;
+  }
+  
+  try{
+      ...
+  }catch(IOException e){
+      Logger,getLogger("com.mycompany.myapp").log(Level.WARNING, "Reading image", e);
+  }
+  ```
+
+  
 
