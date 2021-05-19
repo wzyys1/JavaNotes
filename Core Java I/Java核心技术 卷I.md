@@ -599,7 +599,7 @@ System.out.println("%8.2", x);
 >		x = ...;
 >		list.add(x);
 >	}
->																								
+>																														
 >	var a = new X[list.size()]
 >	list.toArray(a)
 >```
@@ -1810,7 +1810,7 @@ System.out.println("%8.2", x);
 - `日志记录器名` 与 `包名`
 
   - 两者都具有 层次结构，但日志记录器层次更强
-  - 包 与 父包之间没有语义关系，日志记录器的父与子 之间将共享某些属性 eg： 对一个日志记录器设置级别，子日志记录器也会继承这个级别
+  - 包 与 父包 之间没有语义关系，日志记录器的 父与子 之间将共享某些属性 eg： 对一个日志记录器设置级别，子日志记录器也会继承这个级别
 
 - 日志记录器的级别： 高 --> 低
 
@@ -1888,9 +1888,111 @@ System.out.println("%8.2", x);
   try{
       ...
   }catch(IOException e){
-      Logger,getLogger("com.mycompany.myapp").log(Level.WARNING, "Reading image", e);
+      Logger.getLogger("com.mycompany.myapp").log(Level.WARNING, "Reading image", e);
   }
   ```
 
-  
+- 通过编辑配置文件来修改日志系统的各个属性，默认情况下，配置文件位于：`config/logging.properties`  (Java9 之后)
 
+- 想要使用另一个配置文件 就要将 `java.util.logging.config.file` 属性设置为 那个文件位置，为此要使用以下命令启动应用程序
+
+  ```java
+  java -Djava.util.logging.config.file = configFile MainClass
+  ```
+
+- 修改**默认日志级别**，编辑配置文件，修改以下命令行：`.level=INFO`
+
+- 添加下面这一行来指定自定义日志记录器的日志级别 `com.mycompany.myapp.level=FINE`,就是说在日志记录器名后追加后缀 .level
+
+- 将消息发送到控制台是 **处理器** 的任务，不是日志记录器的任务，处理器也有级别，要想在控制台看到 FINE级别 的消息，需要进行如下设置 ： `java.util.logging.ConsoleHandler.level=FINE`
+
+- 日志管理器在 main方法 执行前，虚拟机 启动时初始化，如果没使用命令行 `java.util.logging.config.file` 启动应用，可以在程序中使用如下调用：
+
+  ```java
+  // 会从.file系统属性指定位置读取一个新的配置
+  System.setProperty("java.util.logging.congfig.file", file)
+  // 重新初始化 日志管理器
+  LogManager.getLogManager().readConfiguration()
+  // java9之后
+  LogManager.getLogManager().updateConfiguration(mapper);
+  ```
+
+- `本地化日志消息`
+
+    - 本地化的应用程序应 包含 **资源包** (resource bundle) 中的本地特定信息，**资源包** 包括一组特定的映射 分别对应各个本地环境
+
+      - 每个资源包都有一个名字 eg: `com.mycompany.logmessages`
+    - 想为资源包增加映射，需要对应每个本地化环境提供一个文件
+      - 英文映射位于 `com.mycompany.logmessages_en.properties`
+    - 德文映射位于 `com.mycompany.logmessages_de.properties`
+      - 将这些文件与类文件放在一起，以便，`ResourceBundle类` 自动找到他们
+    
+    - 请求一个日志记录器时，可以指定资源包
+    
+      ```java
+      // 这些资源文件包含如下条目
+      readingFile=Achtung!Datei wird eingelesen
+      renamneFile=Datei wird umbenannt
+      ...
+      // 指定资源包    
+      Logger logger = Logger.getLogger(loggerName,"com.mycompany.logmessages")
+      // 为日志消息指定资源包的键 而不是字符串
+      logger.info("readingFile");
+      
+      // java9 可以使用 logrb方法指定资源包对象
+      logger.logrb(Level.INFO, bundle, "renameFile"m oldName, newName);
+      ```
+    
+    - 在本地化消息中增加参数，消息包含占位符{0}、{1}
+    
+      ```java
+      // 想要在日志消息中包含文件名，可以如下使用占位符
+      Reading file {0}
+      Achtung!Datei {0} wird eingelesen
+          
+      // 通过以下方法 为占位符传递具体值
+      logger.log(Level.INFO, "readingFile", filename);
+      logger.log(Level.INFO, "renamingFile", new Object]{oldName, newName});
+      ```
+    
+- 默认 ，日志记录器将记录发送到 `ConsoleHandler ` ,具体，日志记录器会把记录发送到父处理器，最终的祖先处理器（名为“”）有一个`ConsoleHandler`
+
+- 处理器也有日志级别，要记录的日志必须满足同时高于 日志记录器 和 处理器的阈值
+
+- **日志管理器配置文件** 将默认的控制台处理器 日志级别 设置为 `java.util.logging.ConsoleHandler.level=INFO`
+
+- 要想记录FINE级别日志，需要修改内置文件中的默认 日志记录器级别 和 处理器级别，也可以安装自己的处理器
+
+    ```java
+    Logger logger = Logger.getLogger("com.mycompany.myapp");
+    logger.setLevel(Level.Fine);
+    // 默认情况下日志记录 会发送到 自己的处理器 和 父日志记录器的处理器
+    // 防止祖先日志记录器把所有级别>= FINE的日志记录发送到控制台（防止子类发一遍，父类发一遍）
+    logger.setUseParentHandlers(false);
+    var handler = new ConsoleHandler();
+    handler.setLevel(Level.FINE);
+    logger.addHandler(handler);
+    ```
+
+- 要将日志记录发送到别的地方，就要添加其他的处理器。eg: 
+
+
+    - `FileHandler` : 将日志记录器发送到指定的主机和端口
+    - `SocketHandler`：将记录收集到文件中
+
+- 默认，过滤器 会根据日志级别进行过滤
+
+
+    - 但每个 日志记录器 和 处理器 都可以有一个可选过滤器来完成附加过滤，需要实现 `Filter接口` 并定义以下方法
+
+        - `boolean isLoggable(LogRecord record)` 如果给定日志记录需要记录，则返回 true
+    - 要想将一个 过滤器 安装到 一个 日志记录器 或 处理器中，需要调用 `setFilter方法`。注意，同一时刻最多只能有一个过滤器
+
+- `ConsoleHandler类` 和 `FileHandler类` 可以生成 文本 和 XML格式 的日志记录
+- 你可以自定义生成日志记录格式，需要继承 格式化器 的类 `Formatter类`并覆盖以下方法 `String format(LogRecord record)`，最后调用 `setFormatter 方法` 将格式化器 安装到 处理器中
+- 日志技巧
+  - 对一个简单的应用，选择一个日志记录器。把日志记录器命名为与主应用程序包一样的名字。eg: `com.mycompany.myprog`
+    - 总是可以调用以下方法获得日志记录器: `Logger logger = Logger.getLogger("com.mycompany.myprog"); ` 
+  - 默认的日志配置会把级别等于或高于INFO的所有消息记录到控制台，可以覆盖这个默认配置
+  - 所有INFO以上级别都会打印在控制台上，所以，最好直接将对用户有意义的消息设置为这几个级别
+  - 将程序员想要的日志消息设定为FINE级别是一个很好的选择
